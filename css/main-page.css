@@ -1,0 +1,22 @@
+#site-header {
+  text-align: center;
+  border: double;
+  margin-left: auto;
+  margin-right: auto;
+  width: 800px;
+  height: 128px;
+  background-color: rgba(255, 255, 255, 0.75);
+}
+
+#site-body {
+  text-align: center;
+  border: double;
+  margin-left: auto;
+  margin-right: auto;
+  width: 800px;
+  background-color: rgba(255, 255, 255, 0.75);
+}
+
+body {
+  background-color: rgba(0, 0, 0, 0.25);
+}
