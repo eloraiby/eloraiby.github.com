@@ -11,6 +11,52 @@
 <meta name="keywords" content="" />
 <link rel="stylesheet" type="text/css" media="screen" href="css/style.css" />
 <link href='http://fonts.googleapis.com/css?family=Droid+Sans' rel='stylesheet' type='text/css'/>
+<script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.11.3.min.js"></script>
+
+<script type="text/javascript">
+  function setActiveMenu(am) {
+    var home = document.getElementById('home');
+    var aboutMe = document.getElementById('about-me');
+    var blog = document.getElementById('blog');
+    var contact = document.getElementById('contact');
+    if (am == "about-me") {
+      home.className = "";
+      aboutMe.className = "active";
+      blog.className = "";
+      contact.className = "";
+    } else if (am == "home") {
+      home.className = "active";
+      aboutMe.className = "";
+      blog.className = "";
+      contact.className = "";
+    } else if (am == "blog") {
+      home.className = "";
+      aboutMe.className = "";
+      blog.className = "active";
+      contact.className = "";
+    } else if (am == "contact") {
+      home.className = "";
+      aboutMe.className = "";
+      blog.className = "";
+      contact.className = "active";
+    }
+  }
+
+
+  $(document).ready(function() {
+    var homeEl    = document.getElementById('home');
+    var aboutMeEl = document.getElementById('about-me');
+    var blogEl    = document.getElementById('blog');
+    var contactEl = document.getElementById('contact');
+
+    homeEl.onclick    = function() {  $('#maincont').load('home.html', function() { setActiveMenu ("home"); }); return false; };
+    aboutMeEl.onclick = function() {  $('#maincont').load('about-me.html', function() { setActiveMenu ("about-me"); }); return false; };
+    blogEl.onclick    = function() {  $('#maincont').load('about-me.html', function() { setActiveMenu ("blog"); }); return false; };
+    contactEl.onclick = function() {  $('#maincont').load('about-me.html', function() { setActiveMenu ("contact"); }); return false; };
+
+    $('#maincont').load('home.html', function() { setActiveMenu ("home"); });
+  });
+</script>
 
 </head>
 <body>
@@ -24,10 +70,10 @@
 
       <div id="menucont">
           <ul>
-              <li><a title="" href="" class="active">Home</a></li>
-              <li><a title="" href="">About</a></li>
-              <li><a title="" href="">Blog</a></li>
-              <li><a title="" href="">Contact</a></li>
+              <li><a title="" href="" id="home" class="active">Home</a></li>
+              <li><a title="" href="" id="about-me">About</a></li>
+              <li><a title="" href="" id="blog">Blog</a></li>
+              <li><a title="" href="" id="contact">Contact</a></li>
           </ul>
       </div>
 
@@ -36,115 +82,6 @@
       </div>
 
       <div id="maincont" class="clearfix">
-      	<div id="mainleft">
-              <h1>Algorithms, code and stories</h1>
-              <img class="alignright" alt="" src="images/image.jpg" />
-              <p>This is my home page. A place to share algorithms, code, stories and thoughs.</p>
-
-              <h2>Algorithms & their implementation</h2>
-              Computational geometry algorithms & UTF8 conversions
-
-              <ul class="sidemenu">
-                <li>
-                  <a title="" href="https://github.com/eloraiby/delaunay">
-                    <div id="link-container">
-                      <div class="link-left">
-                        <img class="image" src="images/delaunay.png"/>
-                      </div>
-                      <div class="link-right"><b>Delaunay:</b> divide & conquer fast delaunay implementation library (in C99)</div>
-                  </div>
-                  </a>
-                </li>
-
-                <li>
-                  <a title="" href="https://github.com/eloraiby/arabtype">
-                    <div id="link-container">
-                      <div class="link-left">
-                        <img class="image" src="images/arabtype.png"/>
-                      </div>
-                      <div class="link-right"><b>ArabType:</b> fast and compact arabic utf8 to code point converter (in C99)<br/>&nbsp;&nbsp;&nbsp;&nbsp;Essentially arabic text rendering helper</div>
-                  </div>
-                  </a>
-                </li>
-              </ul>
-
-              <h2>Computer Graphics oriented libraries</h2>
-              Computer graphics/Real-time rendering and data structure libraries.
-
-              <ul class="sidemenu">
-                <li>
-                  <a title="" href="https://github.com/eloraiby/c99-3d-math">
-                    <div id="link-container">
-                      <div class="link-left">
-                        <img class="image" src="images/c99-mathlib.png"/>
-                      </div>
-                      <div class="link-right"><b>3D Math library:</b> 3D Math and Geometry libary (in C99)</div>
-                  </div>
-                  </a>
-                </li>
-              </ul>
-
-              <h2>Programming languages & Parsers</h2>
-              Programming languages and parsers I made for different projects.
-
-              <ul class="sidemenu">
-                <li>
-                  <a title="" href="https://github.com/eloraiby/SchizoFs">
-                    <div id="link-container">
-                      <div class="link-left">
-                        <img class="image" src="images/schizo.png"/>
-                      </div>
-                      <div class="link-right"><b>Schizo:</b> Reference implementation of a modern, <b>"compact syntax"</b><br/>and Pure Lisp dialect (in F#)</div>
-                  </div>
-                  </a>
-                </li>
-
-                <li>
-                  <a title="" href="https://github.com/eloraiby/rl-json-parser">
-                    <div id="link-container">
-                      <div class="link-left">
-                        <img class="image" src="images/json.png"/>
-                      </div>
-                      <div class="link-right"><b>JSON Parser:</b> Lightweight Ragel/Lemon based JSON parser (in C99)</div>
-                  </div>
-                  </a>
-                </li>
-              </ul>
-
-              <h2>Relics from the past</h2>
-              This is some very old code (Still proud of it :)
-
-              <ul class="sidemenu">
-                <li>
-                  <a title="" href="https://github.com/eloraiby/relic-2k-mars">
-                    <div id="link-container">
-                      <div class="link-left">
-                        <img class="image" src="images/2k-mars.png"/>
-                      </div>
-                      <div class="link-right"><b>2K Mars:</b> Windows/DirectX 9.0 2Kb intro</div>
-                  </div>
-                  </a>
-                </li>
-
-                <li>
-                  <a title="" href="https://github.com/eloraiby/relic-aintro">
-                    <div id="link-container">
-                      <div class="link-left">
-                        <img class="image" src="images/aintro.png"/>
-                      </div>
-                      <div class="link-right"><b>Ayn 4K Intro:</b> Made back in 1997 (DOS).<br/>&nbsp;&nbsp;&nbsp;&nbsp;All in a mixed 16/32 bits x86 assembly language</div>
-                  </div>
-                  </a>
-                </li>
-
-              </ul>
-
-          </div>
-
-          <div id="mainright">
-              <h3>Articles & Publications</h3>
-              <p>Most recent entries</p>
-            </div>
       </div>
 </div>
 
