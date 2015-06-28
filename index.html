@@ -14,32 +14,34 @@
 <script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.11.3.min.js"></script>
 
 <script type="text/javascript">
-  function setActiveMenu(am) {
-    var home = document.getElementById('home');
-    var aboutMe = document.getElementById('about-me');
-    var blog = document.getElementById('blog');
-    var contact = document.getElementById('contact');
-    var all = [home, aboutMe, blog, contact];
-    for( var i = 0; i < all.length; ++i ) {
-      if(all[i].id == am) {
-        all[i].className = "active";
-      } else {
-        all[i].className = "";
-      }
-    }
-  }
-
-
   $(document).ready(function() {
     var homeEl    = document.getElementById('home');
     var aboutMeEl = document.getElementById('about-me');
     var blogEl    = document.getElementById('blog');
     var contactEl = document.getElementById('contact');
 
-    homeEl.onclick    = function() {  $('#maincont').load('home.body',    function() { setActiveMenu ("home"); });return false; };
-    aboutMeEl.onclick = function() {  $('#maincont').load('nothing.body', function() { setActiveMenu ("about-me"); }); return false; };
-    blogEl.onclick    = function() {  $('#maincont').load('nothing.body', function() { setActiveMenu ("blog"); }); return false; };
-    contactEl.onclick = function() {  $('#maincont').load('nothing.body', function() { setActiveMenu ("contact"); }); return false; };
+    var all = [homeEl, aboutMeEl, blogEl, contactEl];
+    var bodies = ['home.body', 'nothing.body', 'nothing.body', 'nothing.body'];
+
+    function setActiveMenu(am) {
+      for( var i = 0; i < all.length; ++i ) {
+        if(all[i].id == am) {
+          all[i].className = "active";
+        } else {
+          all[i].className = "";
+        }
+      }
+    }
+
+    // sadly this is the only way to capture the closure since javascript is dynamic and looses the context!
+    function setOnclick(el, body) {
+      el.onclick = function() {  $('#maincont').load(body,    function() { setActiveMenu (el.id); });return false; };
+    }
+
+    // set the menues onclick
+    for( var i = 0; i < all.length; ++i ) {
+      setOnclick (all[i], bodies[i]);
+    }
 
     /* load the main content */
     $('#maincont').load('home.body', function() { setActiveMenu ("home"); });
