@@ -105,6 +105,8 @@
 
   <div id="mainright">
       <h3>Articles &amp; Publications</h3>
-      <p>Most recent entries</p>
+      <ul class="sidemenu">
+          <li><a title="" href="docs/2009MULH2962_these_ELORAIBY.pdf">Ph.D Thesis Dissertation</a></li>
+      </ul>
     </div>
 </div>
