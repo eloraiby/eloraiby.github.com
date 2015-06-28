@@ -19,26 +19,13 @@
     var aboutMe = document.getElementById('about-me');
     var blog = document.getElementById('blog');
     var contact = document.getElementById('contact');
-    if (am == "about-me") {
-      home.className = "";
-      aboutMe.className = "active";
-      blog.className = "";
-      contact.className = "";
-    } else if (am == "home") {
-      home.className = "active";
-      aboutMe.className = "";
-      blog.className = "";
-      contact.className = "";
-    } else if (am == "blog") {
-      home.className = "";
-      aboutMe.className = "";
-      blog.className = "active";
-      contact.className = "";
-    } else if (am == "contact") {
-      home.className = "";
-      aboutMe.className = "";
-      blog.className = "";
-      contact.className = "active";
+    var all = [home, aboutMe, blog, contact];
+    for( var i = 0; i < all.length; ++i ) {
+      if(all[i].id == am) {
+        all[i].className = "active";
+      } else {
+        all[i].className = "";
+      }
     }
   }
 
@@ -49,12 +36,13 @@
     var blogEl    = document.getElementById('blog');
     var contactEl = document.getElementById('contact');
 
-    homeEl.onclick    = function() {  $('#maincont').load('home.html', function() { setActiveMenu ("home"); }); return false; };
-    aboutMeEl.onclick = function() {  $('#maincont').load('about-me.html', function() { setActiveMenu ("about-me"); }); return false; };
-    blogEl.onclick    = function() {  $('#maincont').load('about-me.html', function() { setActiveMenu ("blog"); }); return false; };
-    contactEl.onclick = function() {  $('#maincont').load('about-me.html', function() { setActiveMenu ("contact"); }); return false; };
+    homeEl.onclick    = function() {  $('#maincont').load('home.body',    function() { setActiveMenu ("home"); });return false; };
+    aboutMeEl.onclick = function() {  $('#maincont').load('nothing.body', function() { setActiveMenu ("about-me"); }); return false; };
+    blogEl.onclick    = function() {  $('#maincont').load('nothing.body', function() { setActiveMenu ("blog"); }); return false; };
+    contactEl.onclick = function() {  $('#maincont').load('nothing.body', function() { setActiveMenu ("contact"); }); return false; };
 
-    $('#maincont').load('home.html', function() { setActiveMenu ("home"); });
+    /* load the main content */
+    $('#maincont').load('home.body', function() { setActiveMenu ("home"); });
   });
 </script>
 
@@ -82,6 +70,7 @@
       </div>
 
       <div id="maincont" class="clearfix">
+        /* all contents go here */
       </div>
 </div>
 

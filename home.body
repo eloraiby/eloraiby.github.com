@@ -1,10 +1,11 @@
+<div>
 <div id="mainleft">
       <h1>Algorithms, code and stories</h1>
       <img class="alignright" alt="" src="images/image.jpg" />
       <p>This is my home page. A place to share algorithms, code, stories and thoughs.</p>
 
-      <h2>Algorithms & their implementation</h2>
-      Computational geometry algorithms & UTF8 conversions
+      <h2>Algorithms &amp; their implementation</h2>
+      Computational geometry algorithms &amp; data conversions
 
       <ul class="sidemenu">
         <li>
@@ -13,7 +14,7 @@
               <div class="link-left">
                 <img class="image" src="images/delaunay.png"/>
               </div>
-              <div class="link-right"><b>Delaunay:</b> divide & conquer fast delaunay implementation library (in C99)</div>
+              <div class="link-right"><b>Delaunay:</b> divide &amp; conquer fast delaunay implementation library (in C99)</div>
           </div>
           </a>
         </li>
@@ -24,7 +25,7 @@
               <div class="link-left">
                 <img class="image" src="images/arabtype.png"/>
               </div>
-              <div class="link-right"><b>ArabType:</b> fast and compact arabic utf8 to code point converter (in C99)<br/>&nbsp;&nbsp;&nbsp;&nbsp;Essentially arabic text rendering helper</div>
+              <div class="link-right"><b>ArabType:</b> fast and compact arabic utf8 to code point converter (in C99)<br/>&#160;&#160;&#160;&#160;Essentially arabic text rendering helper</div>
           </div>
           </a>
         </li>
@@ -46,7 +47,7 @@
         </li>
       </ul>
 
-      <h2>Programming languages & Parsers</h2>
+      <h2>Programming languages &amp; Parsers</h2>
       Programming languages and parsers I made for different projects.
 
       <ul class="sidemenu">
@@ -94,7 +95,7 @@
               <div class="link-left">
                 <img class="image" src="images/aintro.png"/>
               </div>
-              <div class="link-right"><b>Ayn 4K Intro:</b> Made back in 1997 (DOS).<br/>&nbsp;&nbsp;&nbsp;&nbsp;All in a mixed 16/32 bits x86 assembly language</div>
+              <div class="link-right"><b>Ayn 4K Intro:</b> Made back in 1997 (DOS).<br/>&#160;&#160;&#160;&#160;All in a mixed 16/32 bits x86 assembly language</div>
           </div>
           </a>
         </li>
@@ -104,6 +105,7 @@
   </div>
 
   <div id="mainright">
-      <h3>Articles & Publications</h3>
+      <h3>Articles &amp; Publications</h3>
       <p>Most recent entries</p>
     </div>
+</div>
