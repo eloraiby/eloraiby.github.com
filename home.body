@@ -106,7 +106,12 @@
   <div id="mainright">
       <h3>Articles &amp; Publications</h3>
       <ul class="sidemenu">
-          <li><a title="" href="docs/2009MULH2962_these_ELORAIBY.pdf">Ph.D Thesis Dissertation</a></li>
+        <li><a title="" href="http://www.worldscientific.com/doi/abs/10.1142/S0218001414560023"><b>Ridge Frequency Estimation For Low-Quality Fingerprint Images Enhancement Using Delaunay Triangulation</b> (2014)</a></li>
+        <li><a title="" href="docs/Centroid_triangulations_from_k-sets.pdf"><b>Centroid Triangulations from <i>k</i>-sets</b> (2012)</a></li>
+        <li><a title="" href="docs/2009MULH2962_these_ELORAIBY.pdf">Ph.D Thesis Dissertation:<b> <i>k</i>-set Polygons and Centroid Triangulations</b> (2009)</a></li>
+        <li><a title="" href="docs/Order-k_ triangulations_of_Convex_Inclusion_Chains_in_the_Plane.pdf"><b>Order-<i>k</i> Triangulations of Convex Inclusion Chains in the Plane.pdf</b> (2008)</a></li>
+        <li><a title="" href="docs/Divide_and_Conquer_Method_for_k-Set_Polygons.pdf"><b>Divide and Conquer Method for <i>k</i>-Set Polygons</b> (2008)</a></li>
+        <li><a title="" href="http://www.amazon.com/More-OpenGL-Game-Programming-Astle/dp/1592008305"><b>More OpenGL Game Programming</b> (2005)</a></li>
       </ul>
     </div>
 </div>
