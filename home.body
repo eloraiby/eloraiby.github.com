@@ -30,10 +30,21 @@
         </li>
       </ul>
 
-      <h2>Computer Graphics oriented libraries</h2>
+      <h2>Computer Graphics projects and oriented libraries</h2>
       Computer graphics/Real-time rendering and data structure libraries.
 
       <ul class="sidemenu">
+        <li>
+          <a title="" href="https://github.com/eloraiby/ProximityQuery">
+            <div id="link-container">
+              <div class="link-left">
+                <img class="image" src="images/proximity-64.png"/>
+              </div>
+              <div class="link-right"><b>Proximity Query:</b> Cache friendly proximity query (in C++11)</div>
+          </div>
+          </a>
+        </li>
+          
         <li>
           <a title="" href="https://github.com/eloraiby/c99-3d-math">
             <div id="link-container">
@@ -44,12 +55,14 @@
           </div>
           </a>
         </li>
+      
       </ul>
 
       <h2>Programming languages &amp; Parsers</h2>
-      Programming languages and parsers I made for different projects.
+      Programming languages and parsers for different projects.
 
       <ul class="sidemenu">
+        <!--
         <li>
           <a title="" href="https://github.com/eloraiby/SchizoFs">
             <div id="link-container">
@@ -60,6 +73,7 @@
           </div>
           </a>
         </li>
+        -->
 
         <li>
           <a title="" href="https://github.com/eloraiby/rl-json-parser">
