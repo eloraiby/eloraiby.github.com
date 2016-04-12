@@ -40,7 +40,7 @@
               <div class="link-left">
                 <img class="image" src="images/proximity-64.png"/>
               </div>
-              <div class="link-right"><b>Proximity Query:</b> Cache friendly proximity query (in C++11)</div>
+              <div class="link-right"><b>Proximity Query:</b> cache friendly 3D Point/Triangular mesh proximity query (in C++11)</div>
           </div>
           </a>
         </li>
