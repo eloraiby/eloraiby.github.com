@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Blog &amp; Technical Notes - Wael El Oraiby</title>
+  <meta name="description" content="Technical articles on computational geometry, systems architecture, high-performance computing, Rust, C/C++, and real-time rendering by Wael El Oraiby." />
+  <meta name="author" content="Wael El Oraiby" />
+
+  <link rel="stylesheet" href="css/style.css" />
+  <script src="js/main.js" defer></script>
+</head>
+<body>
+
+  <!-- Site Navigation Header -->
+  <header class="site-header">
+    <div class="container nav-container">
+      <a href="index.html" class="brand-link">
+        <span class="brand-badge">WO</span>
+        <span>Wael El Oraiby</span>
+      </a>
+
+      <nav>
+        <ul class="nav-menu">
+          <li><a href="index.html" class="nav-link">Home</a></li>
+          <li><a href="index.html#projects" class="nav-link">Projects</a></li>
+          <li><a href="index.html#research" class="nav-link">Research</a></li>
+          <li><a href="blog.html" class="nav-link active">Blog</a></li>
+          <li><a href="index.html#about" class="nav-link">About</a></li>
+          <li><a href="index.html#contact" class="nav-link">Contact</a></li>
+        </ul>
+      </nav>
+
+      <div class="nav-actions">
+        <button class="theme-toggle-btn" aria-label="Toggle theme">
+          <svg class="theme-icon-dark" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="5"></circle>
+            <line x1="12" y1="1" x2="12" y2="3"></line>
+            <line x1="12" y1="21" x2="12" y2="23"></line>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+            <line x1="1" y1="12" x2="3" y2="12"></line>
+            <line x1="21" y1="12" x2="23" y2="12"></line>
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+          </svg>
+          <svg class="theme-icon-light" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+          </svg>
+        </button>
+
+        <button class="mobile-menu-btn" aria-label="Toggle menu" aria-expanded="false">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="3" y1="12" x2="21" y2="12"></line>
+            <line x1="3" y1="6" x2="21" y2="6"></line>
+            <line x1="3" y1="18" x2="21" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <div class="container" style="padding-top: 3.5rem;">
+      <!-- Blog Index Header -->
+      <div class="section-header">
+        <span class="section-tag">Writings &amp; Insights</span>
+        <h1 class="section-title" style="font-size: 2.4rem;">Blog &amp; Technical Notes</h1>
+        <p class="section-subtitle" style="font-size: 1.15rem; max-width: 42rem;">
+          Essays on algorithms, low-level systems programming in Rust and C/C++, graphics pipelines, and computational geometry.
+        </p>
+      </div>
+
+      <!-- Tag Filter Buttons -->
+      <div class="filter-tabs">
+        <button class="filter-btn active" data-filter="all">All Topics</button>
+        <button class="filter-btn" data-filter="algorithms">#Algorithms</button>
+        <button class="filter-btn" data-filter="rust">#Rust</button>
+        <button class="filter-btn" data-filter="fsharp">#F#</button>
+        <button class="filter-btn" data-filter="c99">#C99 / C11</button>
+        <button class="filter-btn" data-filter="graphics">#Graphics</button>
+        <button class="filter-btn" data-filter="systems">#Systems</button>
+      </div>
+
+      <!-- Blog Posts List -->
+      <div class="blog-list">
+
+        <!-- Entry 1 -->
+        <article class="blog-entry-card" data-tags="algorithms,geometry,c99,hpc">
+          <div class="blog-entry-header">
+            <time datetime="2026-03-12" class="blog-date">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                <line x1="16" y1="2" x2="16" y2="6"></line>
+                <line x1="8" y1="2" x2="8" y2="6"></line>
+                <line x1="3" y1="10" x2="21" y2="10"></line>
+              </svg>
+              March 12, 2026
+            </time>
+            <span class="reading-time">7 min read</span>
+          </div>
+
+          <h2 class="blog-entry-title">
+            <a href="blog/2026-03-12-fast-divide-and-conquer-delaunay.html">Fast &amp; Robust Divide-and-Conquer 2D Delaunay Triangulation in C99</a>
+          </h2>
+
+          <p class="blog-entry-excerpt">
+            An algorithmic deep-dive into constructing $O(n \log n)$ 2D Delaunay triangulations. How to guarantee numerical robustness using adaptive floating-point predicates and minimize cache misses using compact quad-edge arenas.
+          </p>
+
+          <div class="blog-entry-footer">
+            <div class="tags-list">
+              <span class="tag">#Algorithms</span>
+              <span class="tag">#Geometry</span>
+              <span class="tag">#C99</span>
+              <span class="tag">#HPC</span>
+            </div>
+            <a href="blog/2026-03-12-fast-divide-and-conquer-delaunay.html" class="card-link-arrow">
+              Read Article &rarr;
+            </a>
+          </div>
+        </article>
+
+        <!-- Entry 2 -->
+        <article class="blog-entry-card" data-tags="rust,graphics,gui,systems">
+          <div class="blog-entry-header">
+            <time datetime="2024-11-05" class="blog-date">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                <line x1="16" y1="2" x2="16" y2="6"></line>
+                <line x1="8" y1="2" x2="8" y2="6"></line>
+                <line x1="3" y1="10" x2="21" y2="10"></line>
+              </svg>
+              November 5, 2024
+            </time>
+            <span class="reading-time">6 min read</span>
+          </div>
+
+          <h2 class="blog-entry-title">
+            <a href="blog/2024-11-05-idiomatic-rust-microui.html">Porting MicroUI to Idiomatic Rust: Immediate-Mode Ergonomics with Zero Allocations</a>
+          </h2>
+
+          <p class="blog-entry-excerpt">
+            How we ported rxi's microui to Rust (microui-rs). Tackling borrow checker constraints without resorting to raw pointer soup, and architecting command buffers with zero heap allocations during the render loop.
+          </p>
+
+          <div class="blog-entry-footer">
+            <div class="tags-list">
+              <span class="tag">#Rust</span>
+              <span class="tag">#Graphics</span>
+              <span class="tag">#GUI</span>
+              <span class="tag">#Systems</span>
+            </div>
+            <a href="blog/2024-11-05-idiomatic-rust-microui.html" class="card-link-arrow">
+              Read Article &rarr;
+            </a>
+          </div>
+        </article>
+
+        <!-- Entry 3 -->
+        <article class="blog-entry-card" data-tags="c99,c11,systems,concurrency,actors">
+          <div class="blog-entry-header">
+            <time datetime="2023-08-20" class="blog-date">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                <line x1="16" y1="2" x2="16" y2="6"></line>
+                <line x1="8" y1="2" x2="8" y2="6"></line>
+                <line x1="3" y1="10" x2="21" y2="10"></line>
+              </svg>
+              August 20, 2023
+            </time>
+            <span class="reading-time">5 min read</span>
+          </div>
+
+          <h2 class="blog-entry-title">
+            <a href="blog/2023-08-20-tiny-actor-model-in-c11.html">Building a Tiny Cooperative Process Manager (TCPM) and Actor Model in C11</a>
+          </h2>
+
+          <p class="blog-entry-excerpt">
+            Why preemptive OS threads can be overkill for deterministic real-time game simulation and trading loops. Designing a cooperative process manager in C11 with bounded ring-buffer queues and zero lock overhead.
+          </p>
+
+          <div class="blog-entry-footer">
+            <div class="tags-list">
+              <span class="tag">#C11</span>
+              <span class="tag">#Systems</span>
+              <span class="tag">#Concurrency</span>
+              <span class="tag">#Actors</span>
+            </div>
+            <a href="blog/2023-08-20-tiny-actor-model-in-c11.html" class="card-link-arrow">
+              Read Article &rarr;
+            </a>
+          </div>
+        </article>
+
+        <!-- Entry 4: The Road to Damascus -->
+        <article class="blog-entry-card" data-tags="fsharp,systems,performance,actors,hpc">
+          <div class="blog-entry-header">
+            <time datetime="2019-10-15" class="blog-date">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                <line x1="16" y1="2" x2="16" y2="6"></line>
+                <line x1="8" y1="2" x2="8" y2="6"></line>
+                <line x1="3" y1="10" x2="21" y2="10"></line>
+              </svg>
+              October 15, 2019
+            </time>
+            <span class="reading-time">10 min read</span>
+          </div>
+
+          <h2 class="blog-entry-title">
+            <a href="blog/2019-10-15-the-road-to-damascus-5m-bids.html">5M Bid Requests/sec, 2ms Max Response Time – The Road to Damascus</a>
+          </h2>
+
+          <p class="blog-entry-excerpt">
+            A systems war story: Scaling an online advertising pacer to 5 million bid requests per second with sub-2ms latency by combining F#, CoreCLR, libuv in C11, and the Actor model.
+          </p>
+
+          <div class="blog-entry-footer">
+            <div class="tags-list">
+              <span class="tag">#FSharp</span>
+              <span class="tag">#Systems</span>
+              <span class="tag">#Performance</span>
+              <span class="tag">#Actors</span>
+              <span class="tag">#HPC</span>
+            </div>
+            <a href="blog/2019-10-15-the-road-to-damascus-5m-bids.html" class="card-link-arrow">
+              Read Article &rarr;
+            </a>
+          </div>
+        </article>
+
+      </div>
+
+      <!-- Quick Add Note for Author -->
+      <div style="margin-top: 3.5rem; background: var(--bg-surface); border: 1px dashed var(--border-color); border-radius: var(--radius-md); padding: 1.5rem;">
+        <h3 style="font-size: 1.1rem; margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.5rem;">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 20h9"></path>
+            <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path>
+          </svg>
+          Blog Skeleton &amp; Publishing Guide
+        </h3>
+        <p style="color: var(--text-secondary); font-size: 0.9rem; line-height: 1.55;">
+          This static blog skeleton is ready for your articles. To add a new dated post, copy <a href="blog/template.html"><code>blog/template.html</code></a> to e.g. <code>blog/YYYY-MM-DD-your-topic.html</code>, fill in your text, and add a card snippet above. It runs with zero build steps and 100% plain HTML/CSS!
+        </p>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- Site Footer -->
+  <footer class="site-footer">
+    <div class="container footer-content">
+      <p>&copy; 2026 Wael El Oraiby. All rights reserved.</p>
+      <div class="footer-socials">
+        <a href="https://github.com/eloraiby" class="footer-social-link" title="GitHub" target="_blank" rel="noopener">GitHub</a>
+        <a href="https://twitter.com/weloraiby" class="footer-social-link" title="X / Twitter" target="_blank" rel="noopener">Twitter</a>
+        <a href="mailto:wael.eloraiby@gmail.com" class="footer-social-link" title="Email">Email</a>
+      </div>
+    </div>
+  </footer>
+
+</body>
+</html>
+

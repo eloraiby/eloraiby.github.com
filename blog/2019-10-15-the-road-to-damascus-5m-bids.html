@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>5M Bid Requests/sec, 2ms Max Response Time – The Road to Damascus - Wael El Oraiby</title>
+  <meta name="description" content="A systems war story: scaling an online advertising pacer to 5 million bid requests per second with sub-2ms latency using F#, CoreCLR, libuv, and the Actor model." />
+  <meta name="author" content="Wael El Oraiby" />
+
+  <link rel="stylesheet" href="../css/style.css" />
+  <script src="../js/main.js" defer></script>
+</head>
+<body>
+
+  <!-- Site Navigation Header -->
+  <header class="site-header">
+    <div class="container nav-container">
+      <a href="../index.html" class="brand-link">
+        <span class="brand-badge">WO</span>
+        <span>Wael El Oraiby</span>
+      </a>
+
+      <nav>
+        <ul class="nav-menu">
+          <li><a href="../index.html" class="nav-link">Home</a></li>
+          <li><a href="../index.html#projects" class="nav-link">Projects</a></li>
+          <li><a href="../index.html#research" class="nav-link">Research</a></li>
+          <li><a href="index.html" class="nav-link active">Blog</a></li>
+          <li><a href="../index.html#about" class="nav-link">About</a></li>
+          <li><a href="../index.html#contact" class="nav-link">Contact</a></li>
+        </ul>
+      </nav>
+
+      <div class="nav-actions">
+        <button class="theme-toggle-btn" aria-label="Toggle theme">
+          <svg class="theme-icon-dark" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="5"></circle>
+            <line x1="12" y1="1" x2="12" y2="3"></line>
+            <line x1="12" y1="21" x2="12" y2="23"></line>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+            <line x1="1" y1="12" x2="3" y2="12"></line>
+            <line x1="21" y1="12" x2="23" y2="12"></line>
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+          </svg>
+          <svg class="theme-icon-light" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+          </svg>
+        </button>
+
+        <button class="mobile-menu-btn" aria-label="Toggle menu" aria-expanded="false">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="3" y1="12" x2="21" y2="12"></line>
+            <line x1="3" y1="6" x2="21" y2="6"></line>
+            <line x1="3" y1="18" x2="21" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <article class="content-container">
+      <!-- Article Header -->
+      <header class="post-header">
+        <a href="index.html" class="post-back-link">
+          &larr; Back to all blog entries
+        </a>
+        <h1 class="post-title">5M Bid Requests/sec, 2ms Max Response Time – The Road to Damascus</h1>
+
+        <div class="post-meta-row">
+          <time datetime="2019-10-15" class="blog-date">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+              <line x1="16" y1="2" x2="16" y2="6"></line>
+              <line x1="8" y1="2" x2="8" y2="6"></line>
+              <line x1="3" y1="10" x2="21" y2="10"></line>
+            </svg>
+            October 15, 2019
+          </time>
+          <span class="reading-time">&bull; 10 min read</span>
+          <span class="author-name">&bull; By Wael El Oraiby</span>
+        </div>
+
+        <div class="tags-list">
+          <span class="tag">#FSharp</span>
+          <span class="tag">#Systems</span>
+          <span class="tag">#Performance</span>
+          <span class="tag">#Actors</span>
+          <span class="tag">#HPC</span>
+        </div>
+      </header>
+
+      <!-- Article Body -->
+      <div class="post-content">
+        <blockquote>
+          <strong>Disclaimer:</strong> Opinions are my own.<br>
+          <em>Warning:</em> This is an engineering war story...
+        </blockquote>
+
+        <p>
+          I work at <a href="https://adgear.com/en/" target="_blank" rel="noopener">Samsung Ads / Adgear</a>, an online advertising platform and exchange serving ads across browsers, mobile devices, and smart TVs.
+        </p>
+
+        <p>
+          A typical pacer node in our system handles up to a million requests per second. One of the primary engineering objectives was making it scale cleanly across multiple cores and network interfaces.
+        </p>
+
+        <p>
+          I set out to rewrite the pacer in <strong>F# / CoreCLR</strong> because of the strong guarantees it offered: a solid type system, units of measure, high-quality tooling, and an asynchronous actor-based framework. The surprise was discovering that the CoreFX asynchronous socket framework on Linux was lagging behind in raw throughput. The ultimate solution was marshaling calls from F# to <a href="https://libuv.org/" target="_blank" rel="noopener">libuv</a> in C11, achieving <strong>5+ million bid requests per second on 16 threads</strong> with sub-2ms response time.
+        </p>
+
+        <h2>1. The Problem Space: Digital Advertising Exchanges</h2>
+        <p>
+          In the worst case, <strong>5,000,000 bid requests per second (over 500k packets)</strong> hammer a single node, each needing to be evaluated and answered in less than 2 milliseconds. The physical machine was a 40 (virtual) core Linux server with dual Gigabit Ethernet interfaces.
+        </p>
+
+        <p>
+          The system must make near-instant decisions on whether to spend money or not to show an impression. The bidding heuristics must be rock solid; a single misbehaving node can overspend and trigger massive financial losses.
+        </p>
+
+        <p>
+          When you load a webpage or open an app on your smart TV, an ad placement triggers a request to an exchange. The platform runs a second-price auction, fanning out queries to bidders. Depending on proximity to the exchange, the decision window is typically ~20ms within a 120ms round trip. At the very end of the pipeline sits a critical service: <strong>The Pacer</strong>.
+        </p>
+
+        <h2>2. The Pacer: Governing Campaign Budgets</h2>
+        <p>
+          The pacer microservice acts as the police officer at the end of the line. Its sole duty is ensuring no advertising campaign exceeds its budget <em>and</em> pacing delivery smoothly over the lifetime of the campaign.
+        </p>
+
+        <h3>Atomics Will Explode</h3>
+        <p>
+          The original pacer was written in C using <a href="http://concurrencykit.org/" target="_blank" rel="noopener">libck</a> for lock-free data structures. Lock-free programming relies heavily on atomic operations to ensure at least one thread always makes progress.
+        </p>
+
+        <div class="post-callout">
+          <strong>The Lock-Free Trap:</strong> The architecture of the old codebase was highly susceptible to race conditions when external state updates arrived. Lock-free code is notoriously difficult to debug, often requiring formal proofs or rigorous testing across disparate CPU memory models (e.g., ARM's weakly ordered memory vs. x86_64 TSO).
+        </div>
+
+        <p>
+          The original single-core C engine could handle 1M requests/s, but background budget updates (arriving every few minutes) mutated shared state concurrently. If update order diverged, overspending occurred.
+        </p>
+
+        <p>
+          To eliminate this, I sought a language with:
+        </p>
+        <ul>
+          <li><strong>Purity &amp; Determinism:</strong> The same input must produce the identical output, vastly simplifying unit tests.</li>
+          <li><strong>Units of Measure:</strong> Preventing insidious bugs like bidding in cents instead of dollars at compile time.</li>
+          <li><strong>Immutability by Default:</strong> Guaranteeing no thread mutates state out from under another.</li>
+        </ul>
+
+        <p>
+          After evaluating Rust (whose compiler times and ecosystem were immature back then), Haskell (hard-to-predict laziness), and OCaml (native debugger limitations), <strong>F# on CoreCLR</strong> became the ideal functional candidate.
+        </p>
+
+        <h2>3. Actor Architecture with MailboxProcessors</h2>
+        <p>
+          To avoid shared-variable synchronization bugs, we adopted an actor-based architecture using F#'s native <code>MailboxProcessor</code>:
+        </p>
+
+        <figure style="margin: 2rem 0;">
+          <img src="../images/actor-pacer.png" alt="Actor Pacer Architecture Diagram" style="width: 100%; border-radius: var(--radius-md); border: 1px solid var(--border-color); box-shadow: var(--shadow-md);" />
+          <figcaption style="font-size: 0.85rem; color: var(--text-muted); text-align: center; margin-top: 0.75rem; font-family: var(--font-mono);">
+            Figure 1: Actor model architecture connecting Gateway Clients, Processors, and Watchers.
+          </figcaption>
+        </figure>
+
+        <ul>
+          <li><strong>Client Actor:</strong> Represents a connection to the external gateway node.</li>
+          <li><strong>Processor Actor:</strong> Evaluates pacing heuristics on each incoming bid request and responds.</li>
+          <li><strong>Watcher Actor:</strong> Monitors budget and campaign configuration changes, broadcasting state updates to processors.</li>
+        </ul>
+
+        <h2>4. The Bottleneck: Profiling CoreFX Sockets</h2>
+        <p>
+          Initial benchmarks showed disappointing throughput: the system plateaued at around <strong>320k requests/sec</strong> across all 40 cores.
+        </p>
+
+        <p>
+          Using <code>perf</code> and Brendan Gregg's flamegraphs on Linux:
+        </p>
+
+        <pre><code>$ sudo ./perfcollect collect session -pid &lt;pid&gt;
+$ sudo perf script -f | FlameGraph/stackcollapse-perf.pl | FlameGraph/flamegraph.pl &gt; flamegraph.svg
+</code></pre>
+
+        <figure style="margin: 2rem 0;">
+          <img src="../images/flamegraph-no-optim.png" alt="Flamegraph before optimization" style="width: 100%; border-radius: var(--radius-md); border: 1px solid var(--border-color); box-shadow: var(--shadow-md);" />
+          <figcaption style="font-size: 0.85rem; color: var(--text-muted); text-align: center; margin-top: 0.75rem; font-family: var(--font-mono);">
+            Figure 2: Initial flamegraph showing 41.9% CPU consumed by CLRLifoSemaphore::Wait and System.Net.Sockets.
+          </figcaption>
+        </figure>
+
+        <p>
+          Profiling revealed:
+        </p>
+        <ol>
+          <li><strong>18.1%</strong> spent in <code>CLRLifoSemaphore::Wait</code>.</li>
+          <li><strong>11.35%</strong> parsing requests, with 7% in <code>JIT_NewArr1</code> allocating transient strings for pattern matching.</li>
+          <li><strong>10.51%</strong> inside <code>System.Net.Sockets.dll</code>.</li>
+        </ol>
+
+        <p>
+          Under the hood, CoreFX's Linux <code>epoll</code> loop ran on a single thread, dishing events off to worker tasks through thread pool semaphores. This induced massive thread hopping and contention.
+        </p>
+
+        <h2>5. The Breakthrough: Marrying F# with libuv in C11</h2>
+        <p>
+          Rather than rewriting the entire business logic, I opted for targeted low-level interop: writing a ~900 line C11 network layer using <strong><a href="https://libuv.org/" target="_blank" rel="noopener">libuv</a></strong>.
+        </p>
+
+        <p>
+          We dedicated 16 cores out of 40 strictly to networking, running 16 isolated <code>uv_loop</code> event loops (one per thread). Each loop parses the wire protocol in zero-allocation C11 and invokes pre-marshaled F# delegate callbacks for pacing decisions.
+        </p>
+
+        <figure style="margin: 2rem 0;">
+          <img src="../images/flamegraph-optim.png" alt="Flamegraph after libuv optimization" style="width: 100%; border-radius: var(--radius-md); border: 1px solid var(--border-color); box-shadow: var(--shadow-md);" />
+          <figcaption style="font-size: 0.85rem; color: var(--text-muted); text-align: center; margin-top: 0.75rem; font-family: var(--font-mono);">
+            Figure 3: Optimized flamegraph demonstrating minimal overhead and blistering throughput.
+          </figcaption>
+        </figure>
+
+        <div class="post-callout">
+          <strong>Final Benchmark Results:</strong> Throughput skyrocketed to <strong>3.7M bid req/s</strong> under our Go load hammer, and peaked at <strong>5.2M bid req/s</strong> using a Pony-based benchmark generator—all with sub-2 millisecond latency.
+        </div>
+
+        <h2>6. Lessons Learned</h2>
+        <ul>
+          <li><strong>Architecture Over Cleverness:</strong> Lock-free data structures often trade debugging sanity and portability for minimal actual throughput gains. Clean shared-nothing actor designs with message passing are vastly superior.</li>
+          <li><strong>Pragmatic Polyglot Systems:</strong> F# provided immaculate type-safety and domain expressiveness for pacing heuristics, while C11 + libuv provided raw socket saturation on Linux.</li>
+          <li><strong>Measure, Don't Guess:</strong> Flamegraphs and CPU counter profiling eliminate conjecture. Every architectural change was guided by empirical flame profiles.</li>
+        </ul>
+
+        <h2>References</h2>
+        <ul>
+          <li><a href="https://github.com/eloraiby/fs-pacer" target="_blank" rel="noopener">GitHub: eloraiby/fs-pacer</a> &mdash; Repository and original essay</li>
+          <li><a href="https://github.com/eloraiby/tcpm" target="_blank" rel="noopener">GitHub: eloraiby/tcpm</a> &mdash; Tiny Cooperative Process Manager in C11</li>
+        </ul>
+      </div>
+
+      <!-- Article Navigation Footer -->
+      <footer class="post-footer-nav">
+        <a href="index.html" class="btn btn-secondary btn-sm">&larr; Back to Blog Index</a>
+        <a href="../index.html#contact" class="btn btn-secondary btn-sm">Discuss this post &rarr;</a>
+      </footer>
+    </article>
+  </main>
+
+  <!-- Site Footer -->
+  <footer class="site-footer">
+    <div class="container footer-content">
+      <p>&copy; 2026 Wael El Oraiby. All rights reserved.</p>
+      <div class="footer-socials">
+        <a href="https://github.com/eloraiby" class="footer-social-link" title="GitHub" target="_blank" rel="noopener">GitHub</a>
+        <a href="https://twitter.com/weloraiby" class="footer-social-link" title="X / Twitter" target="_blank" rel="noopener">Twitter</a>
+        <a href="mailto:wael.eloraiby@gmail.com" class="footer-social-link" title="Email">Email</a>
+      </div>
+    </div>
+  </footer>
+
+</body>
+</html>
+

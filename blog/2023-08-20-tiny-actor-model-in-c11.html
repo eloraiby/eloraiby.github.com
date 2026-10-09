@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Building a Tiny Cooperative Process Manager (TCPM) and Actor Model in C11 - Wael El Oraiby</title>
+  <meta name="description" content="Exploring cooperative multitasking, bounded message queues, and lightweight actor models in modern C11 for embedded and high-throughput real-time systems." />
+  <meta name="author" content="Wael El Oraiby" />
+
+  <link rel="stylesheet" href="../css/style.css" />
+  <script src="../js/main.js" defer></script>
+</head>
+<body>
+
+  <!-- Site Navigation Header -->
+  <header class="site-header">
+    <div class="container nav-container">
+      <a href="../index.html" class="brand-link">
+        <span class="brand-badge">WO</span>
+        <span>Wael El Oraiby</span>
+      </a>
+
+      <nav>
+        <ul class="nav-menu">
+          <li><a href="../index.html" class="nav-link">Home</a></li>
+          <li><a href="../index.html#projects" class="nav-link">Projects</a></li>
+          <li><a href="../index.html#research" class="nav-link">Research</a></li>
+          <li><a href="index.html" class="nav-link active">Blog</a></li>
+          <li><a href="../index.html#about" class="nav-link">About</a></li>
+          <li><a href="../index.html#contact" class="nav-link">Contact</a></li>
+        </ul>
+      </nav>
+
+      <div class="nav-actions">
+        <button class="theme-toggle-btn" aria-label="Toggle theme">
+          <svg class="theme-icon-dark" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="5"></circle>
+            <line x1="12" y1="1" x2="12" y2="3"></line>
+            <line x1="12" y1="21" x2="12" y2="23"></line>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+            <line x1="1" y1="12" x2="3" y2="12"></line>
+            <line x1="21" y1="12" x2="23" y2="12"></line>
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+          </svg>
+          <svg class="theme-icon-light" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+          </svg>
+        </button>
+
+        <button class="mobile-menu-btn" aria-label="Toggle menu" aria-expanded="false">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="3" y1="12" x2="21" y2="12"></line>
+            <line x1="3" y1="6" x2="21" y2="6"></line>
+            <line x1="3" y1="18" x2="21" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <article class="content-container">
+      <!-- Article Header -->
+      <header class="post-header">
+        <a href="index.html" class="post-back-link">
+          &larr; Back to all blog entries
+        </a>
+        <h1 class="post-title">Building a Tiny Cooperative Process Manager (TCPM) and Actor Model in C11</h1>
+
+        <div class="post-meta-row">
+          <time datetime="2023-08-20" class="blog-date">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+              <line x1="16" y1="2" x2="16" y2="6"></line>
+              <line x1="8" y1="2" x2="8" y2="6"></line>
+              <line x1="3" y1="10" x2="21" y2="10"></line>
+            </svg>
+            August 20, 2023
+          </time>
+          <span class="reading-time">&bull; 5 min read</span>
+          <span class="author-name">&bull; By Wael El Oraiby</span>
+        </div>
+
+        <div class="tags-list">
+          <span class="tag">#C11</span>
+          <span class="tag">#Systems</span>
+          <span class="tag">#Concurrency</span>
+          <span class="tag">#Actors</span>
+        </div>
+      </header>
+
+      <!-- Article Body -->
+      <div class="post-content">
+        <p>
+          Preemptive kernel threads are versatile, but for micro-controllers, game simulation ticks, and real-time network pipelines, the overhead of OS context switching, mutex contention, and non-deterministic cache eviction can severely constrain throughput.
+        </p>
+
+        <p>
+          To address this in lightweight C environments, I authored <a href="https://github.com/eloraiby/tcpm" target="_blank" rel="noopener"><strong>tcpm</strong></a>: a compact cooperative process manager and bounded queue actor model in standard C11.
+        </p>
+
+        <h2>1. The Cooperative Invariant</h2>
+        <p>
+          In a cooperative model, tasks voluntarily yield control at known suspension points rather than being interrupted arbitrarily by a hardware timer. This single design invariant brings massive advantages:
+        </p>
+        <ul>
+          <li><strong>No Race Conditions:</strong> Shared state accessed during a task step is strictly thread-safe within that executor thread without locking primitives.</li>
+          <li><strong>Zero Kernel Overhead:</strong> Task switching is simply a function return and pointer swap.</li>
+          <li><strong>Predictable Memory Footprints:</strong> Stack sizes and task communication buffers can be statically provisioned.</li>
+        </ul>
+
+        <h2>2. Bounded Queues &amp; Backpressure</h2>
+        <p>
+          In distributed systems and actor frameworks (such as Akka or Erlang), unbounded mailboxes are a notorious source of silent out-of-memory crashes when message ingestion outpaces consumer drain.
+        </p>
+
+        <div class="post-callout">
+          <strong>Bounded Design:</strong> In <code>tcpm</code>, each process actor owns a fixed-capacity ring buffer. If a mailbox is full, send operations return an immediate backpressure status, forcing the producer to either back off, yield, or drop according to system policy.
+        </div>
+
+        <pre><code>// Message dispatch in tcpm
+typedef struct tcpm_msg_t {
+    uint32_t sender_id;
+    uint32_t msg_type;
+    uint32_t payload_len;
+    uint8_t  data[MAX_PAYLOAD_SIZE];
+} tcpm_msg_t;
+
+int tcpm_send(tcpm_system_t* sys, uint32_t target_pid, const tcpm_msg_t* msg) {
+    tcpm_proc_t* target = &amp;sys->procs[target_pid];
+    if (ring_buffer_is_full(&amp;target->mailbox)) {
+        return TCPM_ERR_BACKPRESSURE;
+    }
+    ring_buffer_push(&amp;target->mailbox, msg);
+    return TCPM_OK;
+}
+</code></pre>
+
+        <h2>3. Practical Applications</h2>
+        <p>
+          This pattern has proven effective in:
+        </p>
+        <ul>
+          <li><strong>High-Frequency Trading &amp; Real-Time Bidding:</strong> Where microsecond determinism matters more than preemptive flexibility.</li>
+          <li><strong>Embedded Firmware:</strong> STM32 and bare-metal environments lacking POSIX threads.</li>
+          <li><strong>Deterministic Game Simulation:</strong> Guaranteeing reproducible network synchronization across peer clients.</li>
+        </ul>
+
+        <h2>Resources</h2>
+        <p>
+          Explore the C11 source and benchmarks on GitHub: <a href="https://github.com/eloraiby/tcpm" target="_blank" rel="noopener">eloraiby/tcpm</a>.
+        </p>
+      </div>
+
+      <!-- Article Navigation Footer -->
+      <footer class="post-footer-nav">
+        <a href="index.html" class="btn btn-secondary btn-sm">&larr; Back to Blog Index</a>
+        <a href="../index.html#contact" class="btn btn-secondary btn-sm">Discuss this post &rarr;</a>
+      </footer>
+    </article>
+  </main>
+
+  <!-- Site Footer -->
+  <footer class="site-footer">
+    <div class="container footer-content">
+      <p>&copy; 2026 Wael El Oraiby. All rights reserved.</p>
+      <div class="footer-socials">
+        <a href="https://github.com/eloraiby" class="footer-social-link" title="GitHub" target="_blank" rel="noopener">GitHub</a>
+        <a href="https://twitter.com/weloraiby" class="footer-social-link" title="X / Twitter" target="_blank" rel="noopener">Twitter</a>
+        <a href="mailto:wael.eloraiby@gmail.com" class="footer-social-link" title="Email">Email</a>
+      </div>
+    </div>
+  </footer>
+
+</body>
+</html>
+
