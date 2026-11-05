@@ -5,11 +5,15 @@ eyebrow = "Background & Expertise"
 [[milestones]]
 title = "NeoCogi"
 meta = "Founder & Principal Architect"
-description = "Architecting real-time systems, mathematical libraries, and Rust GUI frameworks."
+description = "Architecting real-time systems, AI, CAD, mathematical libraries, and Rust GUI frameworks."
 [[milestones]]
-title = "ex-NVIDIA / ex-Microsoft / ex-Samsung"
+title = "NVIDIA / Microsoft / Samsung"
 meta = "AI Infrastructure & Systems Engineer"
 description = "Developed AI infrastructure/AI security software and real-time high-performance distributed systems."
+[[milestones]]
+title = "Gameloft"
+meta = "Tech Lead — Mobile Games, Rendering, Tooling & Pipelines"
+description = "Developed open-world mobile games and 3D rendering systems for devices with only 32 MB of RAM."
 [[milestones]]
 title = "Ph.D. in Computer Science"
 meta = "2009 • Université de Haute-Alsace (LMIA)"
@@ -31,7 +35,7 @@ Senior technologist blending mathematical rigor with high-performance low-level 
 :::about-card
 ### Technical Focus
 
-With extensive experience across tier-1 technology leaders (NVIDIA, Microsoft, Samsung) and leading high-throughput systems at NeoCogi, my primary work revolves around:
+I bring a research background and experience engineering high-throughput systems for tier-1 tech leaders (NVIDIA, Microsoft, Samsung) and optimizing constrained systems (Gameloft, Genetec). My core expertise includes:
 
 - **Systems Architecture:** Microsecond latency pipelines, real-time bidding, distributed consensus, and actor models.
 - **High-Performance Computing & Memory Sympathy:** Cache-conscious layout, SIMD, bounded-queue concurrency, zero-allocation algorithms.

@@ -6,16 +6,20 @@ title = "NeoCogi"
 description = "Lead Systems Architect"
 accent = false
 [[highlights]]
-title = "ex-NVIDIA"
-description = "AI Infrastructure & Security"
+title = "NVIDIA"
+description = "AI Infrastructure, Workflows & Security"
 accent = false
 [[highlights]]
-title = "ex-Microsoft"
-description = "Systems & Platform"
+title = "Microsoft"
+description = "Low Latency & Distributed Systems"
 accent = false
 [[highlights]]
-title = "ex-Samsung"
-description = "Mobile & Software R&D"
+title = "Samsung"
+description = "Low Latency & Distributed Systems & Software R&D"
+accent = false
+[[highlights]]
+title = "Gameloft"
+description = "Mobile Games & Rendering & Tooling & Pipelines"
 accent = false
 [[highlights]]
 title = "Ph.D."

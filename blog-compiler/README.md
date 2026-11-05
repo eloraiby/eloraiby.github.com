@@ -125,6 +125,11 @@ An `about-card` contains Markdown with H3 headings, prose, and lists. An empty
 `timeline` directive renders the containing fragment's `[[milestones]]` records,
 each with `title`, `meta`, and `description`.
 
+The highlights view uses the stylesheet's `highlights-grid`: three columns above
+768px, two columns at widths up to 768px, and one at widths up to 480px. This gives
+the six current highlights balanced desktop rows while keeping narrow screens
+readable. Layout belongs to CSS; the Markdown records supply content and order.
+
 ### Reuse project and publication records
 
 ```markdown

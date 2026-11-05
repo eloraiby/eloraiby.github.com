@@ -75,3 +75,14 @@ are generated under `dist/`; they do not require source-tree HTML files. Git
 ignores the retired root/index and root/blog output locations to prevent accidental
 reintroduction of duplicate pages. The build and Pages deployment commands are
 unchanged.
+
+## Profile formatting follow-up
+
+The authored profile now includes Gameloft, bringing both highlights and milestones
+to six entries, along with the owner's corrected descriptions of the other roles. The highlights
+layout uses three desktop columns, two tablet columns, and one mobile column;
+its responsive rules live in CSS rather than an inline grid declaration.
+Gameloft copy and the Technical Focus introduction were corrected for spelling,
+capitalization, and grammar while retaining the supplied career information.
+Timeline tests follow authored records and no longer enforce the initial five
+milestones.

@@ -169,7 +169,7 @@ fn fragment_view(
             }
             Ok(
                 html! { section id=(&fragment.id) style="padding: 2.5rem 0; background-color: var(--bg-surface);" { div class="container" {
-                    div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1.5rem; text-align: center;" {
+                    div class="highlights-grid" {
                         @for highlight in &fragment.highlights { div style="padding: 1rem;" {
                             div style=(format!("font-size: 1.5rem; font-weight: 800; color: var(--{}); margin-bottom: 0.25rem;", if highlight.accent { "accent" } else { "text-primary" })) { (&highlight.title) }
                             div style="font-size: 0.85rem; color: var(--text-muted);" { (&highlight.description) }
