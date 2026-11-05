@@ -257,9 +257,13 @@ metadata and directive failures, cycles, route conflicts, escaping, curated
 previews, reading times, determinism, filesystem boundaries, stale-file removal,
 and failed-build preservation through the real CLI.
 
-Production-site tests inspect the generated article sections, verbatim code,
-figures, captions, and callouts directly. They also build an isolated tree of
-declared inputs and check asset bytes; no test requires root/blog HTML snapshots.
+Production-site tests derive expected routes, article metadata, listing order,
+curated previews, and card collections from current Markdown. Adding, removing,
+renaming, or editing an article does not require updating a frozen migration list.
+Fixed, isolated Markdown fixtures verify complete article sections, verbatim code,
+figures, captions, quotations, and callouts independently of published content.
+Production tests also build an isolated tree of declared inputs and check asset
+bytes; no test requires root/blog HTML snapshots.
 Timeline checks compare rendered entries with the authored milestones in order,
 so adding or removing a milestone does not require changing an editorial count in
 the tests. A separate regression exercises empty timelines, additions, removals,

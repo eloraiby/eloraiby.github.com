@@ -145,6 +145,75 @@ fn code_examples_are_never_executed_or_expanded_as_directives() {
 }
 
 #[test]
+fn articles_render_complete_sections_verbatim_code_figures_and_callouts() {
+    let fixture = Fixture::new();
+    fixture.write("css/diagram.svg", "<svg/>");
+    fixture.post(
+        "rendering",
+        "",
+        r#"Opening paragraph.
+
+## First & second
+
+> A quotation with **emphasis**.
+
+```c
+if (left < right && ready) {
+    run(&state);
+}
+```
+
+:::figure src="../../css/diagram.svg" alt="A <diagram> & its edges"
+A **caption** with [a reference](https://example.test/reference).
+:::
+
+:::callout
+Keep **all** of this callout.
+:::
+
+## Final section
+
+```rust
+let text = "<&>";
+```
+
+Closing paragraph.
+"#,
+    );
+    let html = output(&fixture.compile().unwrap(), "blog/rendering.html");
+    assert_eq!(
+        texts(&html, ".post-content h2"),
+        ["First & second", "Final section"]
+    );
+    assert_eq!(
+        texts(&html, ".post-content pre code"),
+        [
+            "if (left < right && ready) {\n    run(&state);\n}\n",
+            "let text = \"<&>\";\n"
+        ]
+    );
+    let quotations = texts(&html, ".post-content blockquote");
+    assert_eq!(quotations.len(), 1);
+    assert_eq!(quotations[0].trim(), "A quotation with emphasis.");
+    assert_eq!(texts(&html, ".post-callout strong"), ["all"]);
+    assert_eq!(texts(&html, "figcaption strong"), ["caption"]);
+    assert_eq!(texts(&html, "figcaption a"), ["a reference"]);
+    let parsed = Html::parse_document(&html);
+    let figures: Vec<_> = parsed
+        .select(&Selector::parse(".post-content figure img").unwrap())
+        .collect();
+    assert_eq!(figures.len(), 1);
+    assert_eq!(figures[0].value().attr("src"), Some("../css/diagram.svg"));
+    assert_eq!(
+        figures[0].value().attr("alt"),
+        Some("A <diagram> & its edges")
+    );
+    let body = texts(&html, ".post-content");
+    assert!(body[0].starts_with("Opening paragraph."));
+    assert!(body[0].trim_end().ends_with("Closing paragraph."));
+}
+
+#[test]
 fn malformed_frontmatter_and_unknown_fields_fail() {
     let fixture = Fixture::new();
     fixture.write("content/bad.md", "# Missing front matter");

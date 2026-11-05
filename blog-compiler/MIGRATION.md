@@ -13,8 +13,9 @@ were removed. Markdown is authoritative, and generated pages live in `dist/`.
 - Fifteen project records and six publication records preserve their authored
   ordering, descriptions, actions, and assets. The three NeoCogi project cards
   precede the original twelve records.
-- Four article sources preserve body text, quotations, figures, captions, code,
-  dates, visible tags, and reading-time overrides.
+- Article sources own body text, quotations, figures, captions, code, dates,
+  visible tags, and reading-time overrides. The initial migration contained four
+  articles; membership follows the current Markdown rather than that baseline.
 - `content/blog.md` produces `/blog.html` and `/blog/index.html` with links rebased
   for each route.
 - `content/article-template.md` produces the existing `/blog/template.html` URL as
@@ -33,10 +34,10 @@ are preserved. Mathematical notation remains literal and code remains unhighligh
 
 The initial migration build contained eight HTML pages and 22 unchanged asset files.
 The compiler checks all emitted local links and HTML anchors. Production
-integration tests verify homepage composition, curated preview ordering,
-article sections, verbatim code, figures, captions, callouts, quotations, and
-byte-identical assets. A separate isolated
-build containing only Markdown, configuration, and declared assets proves the
+integration tests verify current routes, homepage composition, curated preview
+ordering, article metadata, and byte-identical assets. Isolated Markdown fixtures
+verify article sections, verbatim code, figures, captions, callouts, and quotations.
+A separate isolated build containing only Markdown, configuration, and declared assets proves the
 compiler does not depend on historical HTML.
 
 Chromium 156 comparisons covered the homepage, both index URLs, and all four
@@ -53,8 +54,8 @@ Rust-topic filtering, mobile-menu opening, aria-expanded state, and closing on a
 outside click. All passed. These local checks do not establish remote deployment:
 the Pages workflow must run in a repository configured to publish via GitHub Actions.
 
-The compiler suite includes 24 isolated contract regressions and four production
-migration regressions. Formatting and Clippy with warnings denied are also checked
+The compiler suite includes isolated contract regressions and production-site
+regressions. Formatting and Clippy with warnings denied are also checked
 by the Pages workflow before building the deployment artifact.
 
 Timeline coverage follows authored milestone titles and roles rather than the
@@ -109,3 +110,14 @@ its homepage preview. COM is applied to the component SDK project; selecting its
 blog filter currently shows an explicit empty state because no COM article has
 been added. Topic-button regression checks follow configuration order and labels
 instead of freezing the original topic count.
+
+## Editorial article removal
+
+Removing the Delaunay article exposed tests that still required eight HTML pages,
+four listing cards, its preview URL, and fixed excerpts from the original bodies.
+Those expectations were migration evidence, not authoring requirements. Production
+checks now compare the complete route set, both index listings, preview ordering,
+article titles/dates/tags, and project/publication ordering with current sources.
+Rendering guarantees live in fixed compiler fixtures so an editorial deletion or
+body correction cannot invalidate them. Local link and anchor validation remains
+mandatory; deleting an article still requires updating any authored links to it.
