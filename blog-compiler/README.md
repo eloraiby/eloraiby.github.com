@@ -81,6 +81,12 @@ matched by `site.toml` topic filters. The listing includes every `post`, ordered
 by descending date with source-path ordering for ties. There is no draft status
 or implicit scheduling in this version.
 
+Delete a post's Markdown file to remove its article, listing card, and homepage
+preview on the next build. A filename change also changes its default URL; set
+`route = "/blog/stable-name.html"` before `[home]` to keep a URL across source
+renames. Update authored links when changing or removing a URL. Builds replace
+the generated output, removing obsolete pages automatically.
+
 Configured topics may precede their first article. Selecting a topic without
 matching `filter_tags` shows an explicit empty-state message; selecting a populated
 topic or All Topics restores the matching cards and hides that message. Visible
@@ -255,7 +261,9 @@ cargo test --locked --manifest-path blog-compiler/Cargo.toml
 Regression tests cover aliases, cross-file references, protected code examples,
 metadata and directive failures, cycles, route conflicts, escaping, curated
 previews, reading times, determinism, filesystem boundaries, stale-file removal,
-and failed-build preservation through the real CLI.
+and failed-build preservation through the real CLI. Publication coverage also
+adds, edits, renames, moves, and removes posts through the CLI, checking both
+indexes and homepage previews, explicit stable routes, and an empty collection.
 
 Production-site tests derive expected routes, article metadata, listing order,
 curated previews, and card collections from current Markdown. Adding, removing,

@@ -121,3 +121,7 @@ article titles/dates/tags, and project/publication ordering with current sources
 Rendering guarantees live in fixed compiler fixtures so an editorial deletion or
 body correction cannot invalidate them. Local link and anchor validation remains
 mandatory; deleting an article still requires updating any authored links to it.
+The CLI publication regression exercises additions, body corrections, filename
+renames, explicit routes, nested source moves, deletion of a featured post, and
+deletion of the last post. Each rebuild checks both indexes and homepage previews;
+obsolete output pages must disappear while explicit routes survive source moves.

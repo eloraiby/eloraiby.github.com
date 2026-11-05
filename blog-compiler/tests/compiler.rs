@@ -82,6 +82,20 @@ topics = []
         Site::load(self.root())?.compile()
     }
 
+    /// Publish through the real CLI, retaining diagnostics if validation fails.
+    fn publish(&self) {
+        let result = Command::new(env!("CARGO_BIN_EXE_blog-compiler"))
+            .args(["build", "--root"])
+            .arg(self.root())
+            .output()
+            .unwrap();
+        assert!(
+            result.status.success(),
+            "CLI build failed: {}",
+            String::from_utf8_lossy(&result.stderr)
+        );
+    }
+
     /// Get an actionable diagnostic without requiring Debug on a successful build.
     fn error(&self) -> String {
         match self.compile() {
@@ -101,6 +115,24 @@ fn texts(html: &str, selector: &str) -> Vec<String> {
     Html::parse_document(html)
         .select(&Selector::parse(selector).unwrap())
         .map(|node| node.text().collect())
+        .collect()
+}
+
+/// Canonicalize listing-card URLs so root and nested index pages compare equally.
+fn card_routes(html: &str, route: &str) -> Vec<String> {
+    let base = url::Url::parse("https://example.test")
+        .unwrap()
+        .join(route)
+        .unwrap();
+    Html::parse_document(html)
+        .select(&Selector::parse(".blog-entry-title a").unwrap())
+        .map(|node| {
+            let target = base.join(node.value().attr("href").unwrap()).unwrap();
+            percent_encoding::percent_decode_str(target.path())
+                .decode_utf8()
+                .unwrap()
+                .into_owned()
+        })
         .collect()
 }
 
@@ -410,15 +442,87 @@ fn builds_are_deterministic_and_assets_are_byte_identical() {
 }
 
 #[test]
-fn publication_replaces_complete_output_and_removes_stale_files() {
+fn cli_publication_follows_post_additions_renames_routes_and_removals() {
     let fixture = Fixture::new();
     let path = fixture.root().join("dist");
-    fixture.post("removed", "", "Body.");
-    fixture.compile().unwrap().write(&path).unwrap();
-    assert!(path.join("blog/removed.html").is_file());
-    fs::remove_file(fixture.root().join("content/posts/removed.md")).unwrap();
-    fixture.compile().unwrap().write(&path).unwrap();
-    assert!(!path.join("blog/removed.html").exists());
+    fixture.home("# Home\n\n:::posts view=\"preview\"\n## Featured\n\nCurated.\n:::");
+    let featured = "[home]\norder = 2\nexcerpt = \"Featured summary\"\ntags = []";
+    // Every publication must refresh the homepage and both indexes together.
+    let publish = |listing: &[&str], previews: &[&str]| {
+        fixture.publish();
+        for route in ["blog.html", "blog/index.html"] {
+            let html = fs::read_to_string(path.join(route)).unwrap();
+            assert_eq!(card_routes(&html, route), listing, "{route}");
+        }
+        let home = fs::read_to_string(path.join("index.html")).unwrap();
+        assert_eq!(card_routes(&home, "index.html"), previews);
+        for route in listing {
+            assert!(path.join(route.trim_start_matches('/')).is_file());
+        }
+    };
+    publish(&[], &[]);
+    fixture.post("featured", featured, "## Original\n\nBody.");
+    fixture.post("unfeatured", "", "Body.");
+    publish(
+        &["/blog/featured.html", "/blog/unfeatured.html"],
+        &["/blog/featured.html"],
+    );
+
+    fs::rename(
+        fixture.root().join("content/posts/featured.md"),
+        fixture.root().join("content/posts/renamed.md"),
+    )
+    .unwrap();
+    publish(
+        &["/blog/renamed.html", "/blog/unfeatured.html"],
+        &["/blog/renamed.html"],
+    );
+    assert!(!path.join("blog/featured.html").exists());
+
+    fs::rename(
+        fixture.root().join("content/posts/renamed.md"),
+        fixture.root().join("content/posts/renamé.md"),
+    )
+    .unwrap();
+    publish(
+        &["/blog/renamé.html", "/blog/unfeatured.html"],
+        &["/blog/renamé.html"],
+    );
+    assert!(!path.join("blog/renamed.html").exists());
+
+    fixture.post(
+        "renamé",
+        &format!("route = \"/articles/pinned.html\"\n{featured}"),
+        "## Updated\n\nCorrected body.",
+    );
+    publish(
+        &["/articles/pinned.html", "/blog/unfeatured.html"],
+        &["/articles/pinned.html"],
+    );
+    assert!(!path.join("blog/renamé.html").exists());
+    let updated = fs::read_to_string(path.join("articles/pinned.html")).unwrap();
+    assert_eq!(texts(&updated, ".post-content h2"), ["Updated"]);
+    assert_eq!(texts(&updated, ".post-content p"), ["Corrected body."]);
+
+    // Explicit URLs survive source renames and moves into nested content folders.
+    fs::create_dir_all(fixture.root().join("content/archive")).unwrap();
+    fs::rename(
+        fixture.root().join("content/posts/renamé.md"),
+        fixture.root().join("content/archive/stable.md"),
+    )
+    .unwrap();
+    publish(
+        &["/articles/pinned.html", "/blog/unfeatured.html"],
+        &["/articles/pinned.html"],
+    );
+    assert!(!path.join("blog/stable.html").exists());
+
+    fs::remove_file(fixture.root().join("content/archive/stable.md")).unwrap();
+    publish(&["/blog/unfeatured.html"], &[]);
+    assert!(!path.join("articles/pinned.html").exists());
+    fs::remove_file(fixture.root().join("content/posts/unfeatured.md")).unwrap();
+    publish(&[], &[]);
+    assert!(!path.join("blog/unfeatured.html").exists());
 }
 
 #[test]

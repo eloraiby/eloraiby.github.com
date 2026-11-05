@@ -141,7 +141,11 @@ fn post_links(html: &Html, route: &str) -> Vec<(String, String)> {
         .iter()
         .map(|node| {
             let target = base.join(node.value().attr("href").unwrap()).unwrap();
-            (target.path().to_owned(), node.text().collect())
+            let path = percent_encoding::percent_decode_str(target.path())
+                .decode_utf8()
+                .unwrap()
+                .into_owned();
+            (path, node.text().collect())
         })
         .collect()
 }
