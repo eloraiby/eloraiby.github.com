@@ -1,0 +1,2 @@
+# Markdown hard breaks and verbatim code excerpts intentionally retain EOL spaces.
+content/**/*.md whitespace=-blank-at-eol

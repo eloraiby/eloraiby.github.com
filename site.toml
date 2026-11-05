@@ -1,0 +1,88 @@
+url = "https://eloraiby.github.io"
+author = "Wael El Oraiby"
+badge = "WO"
+copyright_year = 2026
+footer_note = "Built with modern, responsive plain HTML5 and CSS. No heavy frameworks."
+assets = ["css", "js", "images", "docs", "email.svg"]
+[[navigation]]
+label = "Home"
+href = "index.md#hero"
+blog = false
+[[navigation]]
+label = "Projects"
+href = "index.md#projects"
+blog = false
+[[navigation]]
+label = "Research"
+href = "index.md#research"
+blog = false
+[[navigation]]
+label = "Blog"
+href = "blog.md"
+blog = true
+[[navigation]]
+label = "About"
+href = "index.md#about"
+blog = false
+[[navigation]]
+label = "Contact"
+href = "index.md#contact"
+blog = false
+[[socials]]
+label = "GitHub"
+href = "https://github.com/eloraiby"
+new_tab = true
+title = "GitHub"
+[[socials]]
+label = "NeoCogi"
+href = "https://github.com/NeoCogi"
+new_tab = true
+title = "NeoCogi"
+[[socials]]
+label = "Twitter"
+href = "https://twitter.com/weloraiby"
+new_tab = true
+title = "Twitter"
+[[socials]]
+label = "LinkedIn"
+href = "https://linkedin.com/in/weloraiby"
+new_tab = true
+title = "LinkedIn"
+[[socials]]
+label = "Contact"
+href = "index.md#contact"
+new_tab = false
+title = "Contact"
+[[blog_socials]]
+label = "GitHub"
+href = "https://github.com/eloraiby"
+new_tab = true
+title = "GitHub"
+[[blog_socials]]
+label = "Twitter"
+href = "https://twitter.com/weloraiby"
+new_tab = true
+title = "X / Twitter"
+[[blog_socials]]
+label = "Contact"
+href = "index.md#contact"
+new_tab = false
+title = "Contact"
+[[topics]]
+id = "algorithms"
+label = "#Algorithms"
+[[topics]]
+id = "rust"
+label = "#Rust"
+[[topics]]
+id = "fsharp"
+label = "#F#"
+[[topics]]
+id = "c99"
+label = "#C99 / C11"
+[[topics]]
+id = "graphics"
+label = "#Graphics"
+[[topics]]
+id = "systems"
+label = "#Systems"

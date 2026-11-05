@@ -1,0 +1,50 @@
+name: Compile and publish Markdown site
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: pages-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Install Rust
+        run: rustup toolchain install 1.98.1 --profile minimal --component rustfmt --component clippy
+      - name: Check formatting
+        run: cargo +1.98.1 fmt --manifest-path blog-compiler/Cargo.toml -- --check
+      - name: Lint compiler and tests
+        run: cargo +1.98.1 clippy --locked --manifest-path blog-compiler/Cargo.toml --all-targets -- -D warnings
+      - name: Run compiler and migration regressions
+        run: cargo +1.98.1 test --locked --manifest-path blog-compiler/Cargo.toml
+      - name: Compile and validate the site
+        run: cargo +1.98.1 run --locked --manifest-path blog-compiler/Cargo.toml -- build
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+
+  deploy:
+    if: github.event_name != 'pull_request'
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Publish static artifact
+        id: deployment
+        uses: actions/deploy-pages@v4
