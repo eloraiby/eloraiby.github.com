@@ -1,0 +1,4 @@
+/blog-compiler/target/
+/dist/
+/.dist-stage-*/
+/.dist-backup-*/
