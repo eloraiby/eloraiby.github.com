@@ -21,10 +21,11 @@ JavaScript, SVG, images, and PDFs.
 - Edit `site.toml` for identity, navigation, social links, filters, and asset mounts.
 
 The current asset directories are the single source for CSS, JavaScript, images,
-and documents. Root/blog HTML files and old `.body` fragments are historical
-snapshots, retained to preserve existing local edits and migration references;
-the compiler does not read them. Author new content in Markdown and deploy `dist/`.
-The old copy-an-HTML-template publishing workflow is superseded.
+and documents. HTML pages are generated exclusively into ignored `dist/` output;
+the redundant root/blog HTML copies and obsolete `.body` fragments have been
+removed. Author content in Markdown and serve or deploy `dist/`, rather than the
+repository root. Existing published URLs, including both blog indexes, are
+preserved by the compiler. The old copy-an-HTML-template workflow is superseded.
 
 The [Pages workflow](.github/workflows/pages.yml) checks and compiles the site,
 uploads `dist/`, and deploys pushes to `master` or manual runs. In repository

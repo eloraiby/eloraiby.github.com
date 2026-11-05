@@ -1,9 +1,10 @@
 # Markdown migration
 
-The migration uses the current working-tree website as its visual/content
-baseline, including the user's existing contact and biography edits. Existing
-HTML edits remain outside the implementation commits. Historical root/blog HTML
-is retained as a reference, with Markdown now authoritative for generated output.
+The initial migration used the working-tree website as its visual/content
+baseline, including the user's contact and biography edits. Those edits are
+represented in the Markdown content and Rust-generated layout. After verifying
+the generated output, redundant root/blog HTML and obsolete `.body` fragments
+were removed. Markdown is authoritative, and generated pages live in `dist/`.
 
 ## Resulting ownership
 
@@ -32,7 +33,8 @@ are preserved. Mathematical notation remains literal and code remains unhighligh
 The complete build contains eight HTML pages and 22 unchanged asset files.
 The compiler checks all emitted local links and HTML anchors. Production
 integration tests verify homepage composition, curated preview ordering,
-article-body structure/text/code, and byte-identical assets. A separate isolated
+article sections, verbatim code, figures, captions, callouts, quotations, and
+byte-identical assets. A separate isolated
 build containing only Markdown, configuration, and declared assets proves the
 compiler does not depend on historical HTML.
 
@@ -53,3 +55,19 @@ the Pages workflow must run in a repository configured to publish via GitHub Act
 The compiler suite includes 22 isolated contract regressions and three production
 migration regressions. Formatting and Clippy with warnings denied are also checked
 by the Pages workflow before building the deployment artifact.
+
+## Removal of generated source copies
+
+The eight historical HTML files and three unused `.body` fragments are no longer
+tracked sources. Production tests inspect generated output directly instead of
+reading historical article HTML; no replacement HTML snapshots are stored as
+fixtures. The isolated-input test continues to compile using only configuration,
+Markdown, and declared assets.
+
+All 30 generated files were compared byte for byte before and after the removal.
+The output, including every HTML page and asset, is unchanged. The original
+contact/biography edits remain in the authoritative sources. Old published paths
+are generated under `dist/`; they do not require source-tree HTML files. Git
+ignores the retired root/index and root/blog output locations to prevent accidental
+reintroduction of duplicate pages. The build and Pages deployment commands are
+unchanged.

@@ -1,4 +1,8 @@
 /blog-compiler/target/
 /dist/
+# Published pages are generated under dist/, never maintained at these old paths.
+/index.html
+/blog.html
+/blog/
 /.dist-stage-*/
 /.dist-backup-*/
