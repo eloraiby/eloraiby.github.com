@@ -9,6 +9,9 @@ eyebrow = "Code & Architecture"
 Selected libraries and systems spanning computational geometry, GUI frameworks, parsers, and low-level performance utilities.
 
 :::cards kind="project"
+- [neocogi-ui](../projects/neocogi-ui.md)
+- [neocogi-platform](../projects/neocogi-platform.md)
+- [neocogi-com](../projects/neocogi-com.md)
 - [fs-pacer](../projects/fs-pacer.md)
 - [delaunay](../projects/delaunay.md)
 - [microui-rs](../projects/microui-rs.md)

@@ -10,8 +10,9 @@ were removed. Markdown is authoritative, and generated pages live in `dist/`.
 
 - `content/index.md` composes seven homepage sections from fragments and a curated
   article collection.
-- Twelve project records and six publication records preserve their authored
-  ordering, descriptions, actions, and assets.
+- Fifteen project records and six publication records preserve their authored
+  ordering, descriptions, actions, and assets. The three NeoCogi project cards
+  precede the original twelve records.
 - Four article sources preserve body text, quotations, figures, captions, code,
   dates, visible tags, and reading-time overrides.
 - `content/blog.md` produces `/blog.html` and `/blog/index.html` with links rebased
@@ -30,7 +31,7 @@ are preserved. Mathematical notation remains literal and code remains unhighligh
 
 ## Verification performed
 
-The complete build contains eight HTML pages and 22 unchanged asset files.
+The initial migration build contained eight HTML pages and 22 unchanged asset files.
 The compiler checks all emitted local links and HTML anchors. Production
 integration tests verify homepage composition, curated preview ordering,
 article sections, verbatim code, figures, captions, callouts, quotations, and
@@ -52,7 +53,7 @@ Rust-topic filtering, mobile-menu opening, aria-expanded state, and closing on a
 outside click. All passed. These local checks do not establish remote deployment:
 the Pages workflow must run in a repository configured to publish via GitHub Actions.
 
-The compiler suite includes 23 isolated contract regressions and three production
+The compiler suite includes 24 isolated contract regressions and four production
 migration regressions. Formatting and Clippy with warnings denied are also checked
 by the Pages workflow before building the deployment artifact.
 
@@ -86,3 +87,16 @@ Gameloft copy and the Technical Focus introduction were corrected for spelling,
 capitalization, and grammar while retaining the supplied career information.
 Timeline tests follow authored records and no longer enforce the initial five
 milestones.
+
+## NeoCogi project previews
+
+The project section now begins with `neocogi-ui`, `neocogi-platform`, and
+`neocogi-com`, in that order, with short descriptions and linked full-size
+screenshots. UI and Platform use their repository demo captures. COM uses a
+capture of its real calculator-plugin example output; it is labeled as a
+walkthrough rather than an application UI. Sources, revisions, and image/artwork
+credits are retained in [the image notes](../images/README.md).
+
+These records use `kind = "project"`; no posts, article routes, or blog-list entries
+are added. Project-list regression checks follow authored record ordering, and
+dedicated coverage verifies the requested three cards and their screenshot links.

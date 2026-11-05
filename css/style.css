@@ -576,6 +576,8 @@ section:last-of-type {
 
 .project-screenshot figcaption {
   margin-top: 0.5rem;
+  /* Reserve two caption lines so adjacent screenshot descriptions align. */
+  min-height: 2.9em;
   color: var(--text-muted);
   font-size: 0.75rem;
   line-height: 1.45;

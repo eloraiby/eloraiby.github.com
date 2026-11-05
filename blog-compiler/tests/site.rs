@@ -5,7 +5,11 @@ use std::{
     path::{Path, PathBuf},
 };
 
-use blog_compiler::{Build, Site, markdown, model::Metadata};
+use blog_compiler::{
+    Build, Site, markdown,
+    model::{BlockContent, CardKind, Directive, Metadata},
+};
+use pulldown_cmark::{Event, Parser, Tag};
 use scraper::{ElementRef, Html, Selector};
 
 /// Repository source root; these tests do not depend on the shell working directory.
@@ -29,6 +33,45 @@ fn page(build: &Build, route: &str) -> Html {
 /// Retrieve elements by CSS selector without depending on serialization whitespace.
 fn select<'a>(html: &'a Html, selector: &str) -> Vec<ElementRef<'a>> {
     html.select(&Selector::parse(selector).unwrap()).collect()
+}
+
+/// Read the authored card list so editorial additions retain complete ordered output.
+fn authored_project_titles() -> Vec<String> {
+    let path = root().join("content/sections/projects.md");
+    let section = markdown::parse(&path, &fs::read_to_string(&path).unwrap()).unwrap();
+    let mut titles = Vec::new();
+    for block in section.blocks {
+        let BlockContent::Component {
+            directive: Directive::Cards {
+                kind: CardKind::Project,
+            },
+            body,
+        } = block.content
+        else {
+            continue;
+        };
+        for block in body {
+            let BlockContent::Markdown(text) = block.content else {
+                panic!("project card references must remain Markdown lists");
+            };
+            for event in Parser::new_ext(&text, markdown::options()) {
+                if let Event::Start(Tag::Link { dest_url, .. }) = event {
+                    let source = path.parent().unwrap().join(dest_url.as_ref());
+                    let record =
+                        markdown::parse(&source, &fs::read_to_string(&source).unwrap()).unwrap();
+                    let Metadata::Project(project) = record.metadata else {
+                        panic!("project collections must reference project records");
+                    };
+                    titles.push(project.title);
+                }
+            }
+        }
+    }
+    assert!(
+        !titles.is_empty(),
+        "the homepage must retain its authored project collection"
+    );
+    titles
 }
 
 /// Published article features that must survive compilation without HTML fixtures.
@@ -59,7 +102,11 @@ fn production_routes_cards_publications_and_curated_previews_are_preserved() {
         8
     );
     let home = page(&build, "index.html");
-    assert_eq!(select(&home, ".projects-grid .card").len(), 12);
+    let project_titles: Vec<String> = select(&home, ".projects-grid .card-title")
+        .iter()
+        .map(|node| node.text().collect())
+        .collect();
+    assert_eq!(project_titles, authored_project_titles());
     assert_eq!(select(&home, ".publications-list .pub-item").len(), 6);
     // Editorial additions must render completely without freezing the milestone count.
     let about_path = root().join("content/sections/about.md");
@@ -292,5 +339,68 @@ fn declared_source_inputs_are_sufficient_and_assets_are_copied_exactly() {
                 path.display()
             );
         }
+    }
+}
+
+#[test]
+fn neocogi_projects_have_ordered_screenshots_without_blog_entries() {
+    let build = compile();
+    let home = page(&build, "index.html");
+    let cards = select(&home, ".projects-grid > .card");
+    let expected = ["neocogi-ui", "neocogi-platform", "neocogi-com"];
+    for (card, project) in cards.iter().zip(expected) {
+        let link = card
+            .select(&Selector::parse(".card-title a").unwrap())
+            .next()
+            .unwrap();
+        assert_eq!(link.text().collect::<String>(), project);
+        assert_eq!(
+            link.value().attr("href"),
+            Some(format!("https://github.com/NeoCogi/{project}").as_str())
+        );
+        let screenshot = card
+            .select(&Selector::parse(".project-screenshot img").unwrap())
+            .next()
+            .unwrap();
+        assert_eq!(
+            screenshot.value().attr("src"),
+            Some(format!("images/{project}.png").as_str())
+        );
+        assert!(
+            screenshot
+                .value()
+                .attr("alt")
+                .is_some_and(|alt| !alt.trim().is_empty())
+        );
+        let full_size = card
+            .select(&Selector::parse(".project-screenshot > a").unwrap())
+            .next()
+            .unwrap();
+        assert_eq!(
+            full_size.value().attr("href"),
+            screenshot.value().attr("src")
+        );
+        assert!(
+            card.select(&Selector::parse(".card-body").unwrap())
+                .next()
+                .unwrap()
+                .text()
+                .collect::<String>()
+                .len()
+                > 40
+        );
+    }
+    assert_eq!(select(&home, ".project-screenshot").len(), expected.len());
+    for route in ["blog.html", "blog/index.html"] {
+        let blog = page(&build, route);
+        let titles: Vec<String> = select(&blog, ".blog-entry-title")
+            .iter()
+            .map(|node| node.text().collect())
+            .collect();
+        assert!(
+            expected
+                .iter()
+                .all(|project| !titles.iter().any(|title| title == project))
+        );
     }
 }
