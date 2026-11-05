@@ -7,7 +7,7 @@ use std::{
 
 use blog_compiler::{
     Build, Site, markdown,
-    model::{BlockContent, CardKind, Directive, Metadata},
+    model::{BlockContent, CardKind, Config, Directive, Metadata},
 };
 use pulldown_cmark::{Event, Parser, Tag};
 use scraper::{ElementRef, Html, Selector};
@@ -168,7 +168,26 @@ fn production_routes_cards_publications_and_curated_previews_are_preserved() {
     );
     let blog = page(&build, "blog.html");
     assert_eq!(select(&blog, ".blog-entry-card").len(), 4);
-    assert_eq!(select(&blog, ".filter-btn").len(), 7);
+    let config: Config =
+        toml::from_str(&fs::read_to_string(root().join("site.toml")).unwrap()).unwrap();
+    let filters: Vec<(String, String)> = select(&blog, ".filter-btn")
+        .iter()
+        .map(|node| {
+            (
+                node.value().attr("data-filter").unwrap().to_owned(),
+                node.text().collect(),
+            )
+        })
+        .collect();
+    let expected_filters = std::iter::once(("all".to_owned(), "All Topics".to_owned()))
+        .chain(
+            config
+                .topics
+                .into_iter()
+                .map(|topic| (topic.id, topic.label)),
+        )
+        .collect::<Vec<_>>();
+    assert_eq!(filters, expected_filters);
     assert_eq!(select(&home, ".theme-toggle-btn").len(), 1);
     assert_eq!(
         select(&home, "#contact img")[0].value().attr("src"),
@@ -354,6 +373,17 @@ fn neocogi_projects_have_ordered_screenshots_without_blog_entries() {
             .next()
             .unwrap();
         assert_eq!(link.text().collect::<String>(), project);
+        let project_tags: Vec<String> = card
+            .select(&Selector::parse(".tag").unwrap())
+            .map(|node| node.text().collect())
+            .collect();
+        let requested_tag = match project {
+            "neocogi-ui" => "UI",
+            "neocogi-platform" => "Rendering",
+            "neocogi-com" => "COM",
+            _ => unreachable!(),
+        };
+        assert!(project_tags.iter().any(|tag| tag == requested_tag));
         assert_eq!(
             link.value().attr("href"),
             Some(format!("https://github.com/NeoCogi/{project}").as_str())

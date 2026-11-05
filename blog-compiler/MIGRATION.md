@@ -100,3 +100,12 @@ credits are retained in [the image notes](../images/README.md).
 These records use `kind = "project"`; no posts, article routes, or blog-list entries
 are added. Project-list regression checks follow authored record ordering, and
 dedicated coverage verifies the requested three cards and their screenshot links.
+
+## Additional topic tags
+
+UI, COM, and Rendering are available as project badges and blog topic filters.
+The existing MicroUI project and article carry UI and Rendering tags, including
+its homepage preview. COM is applied to the component SDK project; selecting its
+blog filter currently shows an explicit empty state because no COM article has
+been added. Topic-button regression checks follow configuration order and labels
+instead of freezing the original topic count.

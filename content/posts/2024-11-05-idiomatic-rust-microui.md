@@ -3,14 +3,14 @@ kind = "post"
 title = "Porting MicroUI to Idiomatic Rust: Immediate-Mode Ergonomics with Zero Allocations"
 description = "Lessons from porting rxi's microui directly to Rust in microui-rs: handling borrow checking, avoiding heap allocations in frame loops, and building lightweight immediate-mode GUIs."
 excerpt = "How we ported rxi's microui to Rust (microui-rs). Tackling borrow checker constraints without resorting to raw pointer soup, and architecting command buffers with zero heap allocations during the render loop."
-tags = ["Rust", "Graphics", "GUI", "Systems"]
-filter_tags = ["rust", "graphics", "gui", "systems"]
+tags = ["Rust", "Graphics", "GUI", "UI", "Rendering", "Systems"]
+filter_tags = ["rust", "graphics", "gui", "ui", "rendering", "systems"]
 reading_minutes = 6
 date = 2024-11-05
 [home]
 order = 2
 excerpt = "How we ported rxi's microui to Rust in microui-rs. Tackling borrow checker constraints without resorting to raw pointer soup, and architecting command buffers with zero heap allocations during the render loop."
-tags = ["Rust", "Graphics", "GUI"]
+tags = ["Rust", "Graphics", "GUI", "UI", "Rendering"]
 +++
 
 Immediate-mode GUIs (IMGUI) have gained huge popularity in game engines, diagnostics tools, and embedded renderers because they eliminate state synchronization between application logic and UI widgets. In C, rxi's `microui` was an inspirational masterpiece of minimalism: tiny, fast, and dependency-free.

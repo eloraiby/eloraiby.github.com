@@ -81,6 +81,11 @@ matched by `site.toml` topic filters. The listing includes every `post`, ordered
 by descending date with source-path ordering for ties. There is no draft status
 or implicit scheduling in this version.
 
+Configured topics may precede their first article. Selecting a topic without
+matching `filter_tags` shows an explicit empty-state message; selecting a populated
+topic or All Topics restores the matching cards and hides that message. Visible
+project badges are independent of article filter membership.
+
 `reading_minutes = 7` preserves an explicit reading time. Without it, the
 compiler counts body text and code recursively at 200 words/minute, rounds up,
 and displays at least one minute.

@@ -480,6 +480,7 @@ fn posts(
                 @for topic in &context.site.config.topics { button class="filter-btn" data-filter=(&topic.id) { (&topic.label) } }
             }
             (list)
+            p class="filter-empty section-subtitle" hidden role="status" aria-live="polite" { "No articles match this topic yet." }
         })
     }
 }

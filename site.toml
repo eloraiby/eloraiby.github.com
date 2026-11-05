@@ -84,5 +84,14 @@ label = "#C99 / C11"
 id = "graphics"
 label = "#Graphics"
 [[topics]]
+id = "ui"
+label = "#UI"
+[[topics]]
+id = "com"
+label = "#COM"
+[[topics]]
+id = "rendering"
+label = "#Rendering"
+[[topics]]
 id = "systems"
 label = "#Systems"

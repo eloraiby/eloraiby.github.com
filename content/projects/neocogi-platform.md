@@ -3,7 +3,7 @@ kind = "project"
 title = "neocogi-platform"
 repository = "https://github.com/NeoCogi/neocogi-platform"
 icon_text = "GPU"
-tags = ["Rust", "Graphics", "COM"]
+tags = ["Rust", "Graphics", "Rendering", "COM"]
 [action]
 label = "Repo →"
 href = "https://github.com/NeoCogi/neocogi-platform"

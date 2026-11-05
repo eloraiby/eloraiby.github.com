@@ -70,8 +70,11 @@
     // --- 3. Blog Tag Filtering (Blog Index) ---
     const filterBtns = document.querySelectorAll('.filter-btn');
     const blogCards = document.querySelectorAll('.blog-entry-card');
+    const filterEmpty = document.querySelector('.filter-empty');
 
-    if (filterBtns.length > 0 && blogCards.length > 0) {
+    if (filterBtns.length > 0) {
+      // Configured topics can exist before their first article is published.
+      if (filterEmpty) filterEmpty.hidden = blogCards.length > 0;
       filterBtns.forEach((btn) => {
         btn.addEventListener('click', () => {
           const filter = btn.getAttribute('data-filter');
@@ -81,14 +84,17 @@
           btn.classList.add('active');
 
           // Filter cards
+          let matches = 0;
           blogCards.forEach((card) => {
             const tags = (card.getAttribute('data-tags') || '').toLowerCase().split(',');
             if (filter === 'all' || tags.includes(filter.toLowerCase())) {
               card.style.display = 'flex';
+              matches += 1;
             } else {
               card.style.display = 'none';
             }
           });
+          if (filterEmpty) filterEmpty.hidden = matches > 0;
         });
       });
     }

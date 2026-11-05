@@ -5,7 +5,7 @@ repository = "https://github.com/NeoCogi/microui-rs"
 image = "../../images/microui.png"
 image_alt = "microui-rs thumbnail"
 stars = 51
-tags = ["Rust", "GUI", "NeoCogi"]
+tags = ["Rust", "GUI", "UI", "Rendering", "NeoCogi"]
 [action]
 label = "Repo →"
 href = "https://github.com/NeoCogi/microui-rs"
