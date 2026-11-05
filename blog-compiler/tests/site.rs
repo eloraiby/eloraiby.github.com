@@ -5,7 +5,7 @@ use std::{
     path::{Path, PathBuf},
 };
 
-use blog_compiler::{Build, Site};
+use blog_compiler::{Build, Site, markdown, model::Metadata};
 use scraper::{ElementRef, Html, Selector};
 
 /// Repository source root; these tests do not depend on the shell working directory.
@@ -61,7 +61,36 @@ fn production_routes_cards_publications_and_curated_previews_are_preserved() {
     let home = page(&build, "index.html");
     assert_eq!(select(&home, ".projects-grid .card").len(), 12);
     assert_eq!(select(&home, ".publications-list .pub-item").len(), 6);
-    assert_eq!(select(&home, ".timeline-item").len(), 5);
+    // Editorial additions must render completely without freezing the milestone count.
+    let about_path = root().join("content/sections/about.md");
+    let about = markdown::parse(&about_path, &fs::read_to_string(&about_path).unwrap()).unwrap();
+    let Metadata::Fragment(about) = about.metadata else {
+        panic!("the About source must remain a fragment");
+    };
+    let titles: Vec<String> = select(&home, ".timeline-role")
+        .iter()
+        .map(|node| node.text().collect())
+        .collect();
+    let roles: Vec<String> = select(&home, ".timeline-meta")
+        .iter()
+        .map(|node| node.text().collect())
+        .collect();
+    assert_eq!(
+        titles,
+        about
+            .milestones
+            .iter()
+            .map(|milestone| milestone.title.as_str())
+            .collect::<Vec<_>>()
+    );
+    assert_eq!(
+        roles,
+        about
+            .milestones
+            .iter()
+            .map(|milestone| milestone.meta.as_str())
+            .collect::<Vec<_>>()
+    );
     let sections: Vec<_> = select(&home, "main > section")
         .iter()
         .map(|node| node.value().attr("id").unwrap())

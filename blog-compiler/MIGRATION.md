@@ -52,9 +52,13 @@ Rust-topic filtering, mobile-menu opening, aria-expanded state, and closing on a
 outside click. All passed. These local checks do not establish remote deployment:
 the Pages workflow must run in a repository configured to publish via GitHub Actions.
 
-The compiler suite includes 22 isolated contract regressions and three production
+The compiler suite includes 23 isolated contract regressions and three production
 migration regressions. Formatting and Clippy with warnings denied are also checked
 by the Pages workflow before building the deployment artifact.
+
+Timeline coverage follows authored milestone titles and roles rather than the
+original migration's fixed entry count. Adding, removing, or reordering entries
+is normal authoring work, with separate regression coverage for those operations.
 
 ## Removal of generated source copies
 

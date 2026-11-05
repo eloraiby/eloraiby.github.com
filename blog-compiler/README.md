@@ -236,3 +236,7 @@ and failed-build preservation through the real CLI.
 Production-site tests inspect the generated article sections, verbatim code,
 figures, captions, and callouts directly. They also build an isolated tree of
 declared inputs and check asset bytes; no test requires root/blog HTML snapshots.
+Timeline checks compare rendered entries with the authored milestones in order,
+so adding or removing a milestone does not require changing an editorial count in
+the tests. A separate regression exercises empty timelines, additions, removals,
+reordering, escaping, and inline Markdown descriptions.

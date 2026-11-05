@@ -457,3 +457,29 @@ fn card_reference_cycles_fail_without_recursing_indefinitely() {
     fixture.write("content/self.md", "+++\nkind = \"project\"\ntitle = \"Self\"\nicon_text = \"S\"\ntags = []\n[action]\nlabel = \"View\"\nhref = \"https://example.test\"\n+++\n\n:::cards kind=\"project\"\n- [Self](self.md)\n:::\n");
     assert!(fixture.error().contains("card reference cycle"));
 }
+
+#[test]
+fn timelines_follow_authored_additions_removals_and_order() {
+    let fixture = Fixture::new();
+    fixture.home("# Home\n\n:::include src=\"timeline.md\" view=\"markdown\"\n:::");
+    for titles in [
+        &[][..],
+        &["First & Founder"][..],
+        &["First & Founder", "Second", "Third"][..],
+        &["Third", "First & Founder"][..],
+    ] {
+        let mut source = String::from("+++\nkind = \"fragment\"\nid = \"timeline\"\n");
+        for title in titles {
+            source.push_str(&format!("[[milestones]]\ntitle = \"{title}\"\nmeta = \"A role\"\ndescription = \"Work with **emphasis**.\"\n"));
+        }
+        source.push_str("+++\n\n:::timeline\n:::\n");
+        fixture.write("content/timeline.md", &source);
+        let html = output(&fixture.compile().unwrap(), "index.html");
+        assert_eq!(texts(&html, ".timeline-role"), titles);
+        assert_eq!(texts(&html, ".timeline-meta"), vec!["A role"; titles.len()]);
+        assert_eq!(
+            texts(&html, ".timeline-desc strong"),
+            vec!["emphasis"; titles.len()]
+        );
+    }
+}
