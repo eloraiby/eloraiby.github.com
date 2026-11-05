@@ -232,3 +232,7 @@ Regression tests cover aliases, cross-file references, protected code examples,
 metadata and directive failures, cycles, route conflicts, escaping, curated
 previews, reading times, determinism, filesystem boundaries, stale-file removal,
 and failed-build preservation through the real CLI.
+
+Production-site tests inspect the generated article sections, verbatim code,
+figures, captions, and callouts directly. They also build an isolated tree of
+declared inputs and check asset bytes; no test requires root/blog HTML snapshots.

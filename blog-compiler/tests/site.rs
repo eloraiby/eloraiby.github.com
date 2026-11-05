@@ -31,26 +31,20 @@ fn select<'a>(html: &'a Html, selector: &str) -> Vec<ElementRef<'a>> {
     html.select(&Selector::parse(selector).unwrap()).collect()
 }
 
-/// Normalize content structure while ignoring new heading anchors and HTML spelling.
-fn normalized(element: ElementRef<'_>) -> String {
-    let tag = match element.value().name() {
-        "i" => "em",
-        other => other,
-    };
-    let mut output = format!("<{tag}>");
-    for child in element.children() {
-        if let Some(text) = child.value().as_text() {
-            if element.value().name() == "code" {
-                output.push_str(text);
-            } else {
-                output.push_str(&text.split_whitespace().collect::<Vec<_>>().join(" "));
-            }
-        } else if let Some(child) = ElementRef::wrap(child) {
-            output.push_str(&normalized(child));
-        }
-    }
-    output.push_str(&format!("</{tag}>"));
-    output
+/// Published article features that must survive compilation without HTML fixtures.
+struct ArticleContract {
+    /// Generated route identifying the Markdown article being checked.
+    route: &'static str,
+    /// Ordered H2 sections, verifying that the full article body is present.
+    headings: &'static [&'static str],
+    /// One verbatim marker per code block, preserving characters and line breaks.
+    code_markers: &'static [&'static str],
+    /// Resolved figure URLs in article order.
+    figures: &'static [&'static str],
+    /// Number of semantic callout containers.
+    callouts: usize,
+    /// Number of quotations, including the Pacer disclaimer.
+    quotations: usize,
 }
 
 #[test]
@@ -107,26 +101,130 @@ fn production_routes_cards_publications_and_curated_previews_are_preserved() {
 }
 
 #[test]
-fn migrated_article_bodies_preserve_the_original_content_and_code() {
+fn articles_render_complete_sections_verbatim_code_figures_and_callouts() {
     let build = compile();
-    for (path, bytes) in build.files() {
-        if !path.to_string_lossy().starts_with("blog/20") {
-            continue;
-        }
-        // Historical HTML remains a migration reference while user edits are retained.
-        // Compilation itself never reads it; the independence test below proves that.
-        let original = Html::parse_document(&fs::read_to_string(root().join(path)).unwrap());
-        let generated = Html::parse_document(std::str::from_utf8(bytes).unwrap());
+    let contracts = [
+        ArticleContract {
+            route: "blog/2019-10-15-the-road-to-damascus-5m-bids.html",
+            headings: &[
+                "1. The Problem Space: Digital Advertising Exchanges",
+                "2. The Pacer: Governing Campaign Budgets",
+                "3. Actor Architecture with MailboxProcessors",
+                "4. The Bottleneck: Profiling CoreFX Sockets",
+                "5. The Breakthrough: Marrying F# with libuv in C11",
+                "6. Lessons Learned",
+                "References",
+            ],
+            code_markers: &["$ sudo ./perfcollect collect session -pid <pid>\n$ sudo perf script"],
+            figures: &[
+                "../images/actor-pacer.png",
+                "../images/flamegraph-no-optim.png",
+                "../images/flamegraph-optim.png",
+            ],
+            callouts: 2,
+            quotations: 1,
+        },
+        ArticleContract {
+            route: "blog/2023-08-20-tiny-actor-model-in-c11.html",
+            headings: &[
+                "1. The Cooperative Invariant",
+                "2. Bounded Queues & Backpressure",
+                "3. Practical Applications",
+                "Resources",
+            ],
+            code_markers: &["tcpm_proc_t* target = &sys->procs[target_pid];\n"],
+            figures: &[],
+            callouts: 1,
+            quotations: 0,
+        },
+        ArticleContract {
+            route: "blog/2024-11-05-idiomatic-rust-microui.html",
+            headings: &[
+                "1. The Problem with Direct C Translations",
+                "2. Command Buffer Arenas & Token-Based Contexts",
+                "3. Ergonomic Rust API",
+                "Conclusion",
+            ],
+            code_markers: &[
+                "MouseButton::Left \n        && self.focus == id;",
+                "#[repr(C)]\n#[derive(Clone, Copy)]\npub enum Command",
+                "ctx.window(\"Diagnostics\", Rect::new(10, 10, 260, 200), |ctx| {",
+            ],
+            figures: &["../images/microui.png"],
+            callouts: 1,
+            quotations: 0,
+        },
+        ArticleContract {
+            route: "blog/2026-03-12-fast-divide-and-conquer-delaunay.html",
+            headings: &[
+                "1. The Divide-and-Conquer Strategy",
+                "2. Robust Geometric Predicates",
+                "3. Compact Quad-Edge Topology in C99",
+                "4. Empirical Performance",
+                "Resources & Code",
+            ],
+            code_markers: &[
+                "return (acx * bcy) - (acy * bcx);\n}",
+                "uint32_t next;   // Index to next CCW edge\n",
+            ],
+            figures: &[],
+            callouts: 1,
+            quotations: 1,
+        },
+    ];
+    for contract in contracts {
+        let generated = page(&build, contract.route);
+        let headings: Vec<String> = select(&generated, ".post-content h2")
+            .iter()
+            .map(|node| node.text().collect())
+            .collect();
+        assert_eq!(headings, contract.headings, "{}", contract.route);
+        let code = select(&generated, ".post-content pre code");
         assert_eq!(
-            normalized(select(&original, ".post-content")[0]),
-            normalized(select(&generated, ".post-content")[0]),
+            code.len(),
+            contract.code_markers.len(),
             "{}",
-            path.display()
+            contract.route
+        );
+        for (block, marker) in code.iter().zip(contract.code_markers) {
+            let text: String = block.text().collect();
+            assert!(
+                text.contains(marker),
+                "{}: missing code marker {marker:?}",
+                contract.route
+            );
+        }
+        let figures = select(&generated, ".post-content figure img");
+        let sources: Vec<_> = figures
+            .iter()
+            .map(|node| node.value().attr("src").unwrap())
+            .collect();
+        assert_eq!(sources, contract.figures, "{}", contract.route);
+        assert!(
+            figures
+                .iter()
+                .all(|node| node.value().attr("alt").is_some_and(|alt| !alt.is_empty()))
+        );
+        assert_eq!(
+            select(&generated, ".post-content figcaption").len(),
+            figures.len()
+        );
+        assert_eq!(
+            select(&generated, ".post-content .post-callout").len(),
+            contract.callouts,
+            "{}",
+            contract.route
+        );
+        assert_eq!(
+            select(&generated, ".post-content blockquote").len(),
+            contract.quotations,
+            "{}",
+            contract.route
         );
     }
 }
 
-/// Copy only the declared Markdown/configuration/asset inputs, excluding old HTML.
+/// Copy only declared Markdown, configuration, and asset inputs into an isolated root.
 fn copy_tree(source: &Path, destination: &Path) {
     if source.is_file() {
         fs::create_dir_all(destination.parent().unwrap()).unwrap();
@@ -141,7 +239,7 @@ fn copy_tree(source: &Path, destination: &Path) {
 }
 
 #[test]
-fn compiler_needs_no_legacy_html_and_copies_assets_exactly() {
+fn declared_source_inputs_are_sufficient_and_assets_are_copied_exactly() {
     let directory = tempfile::tempdir().unwrap();
     for path in [
         "site.toml",
