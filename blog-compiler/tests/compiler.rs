@@ -483,3 +483,80 @@ fn timelines_follow_authored_additions_removals_and_order() {
         );
     }
 }
+
+#[test]
+fn project_screenshots_resolve_from_records_and_require_accessible_images() {
+    let fixture = Fixture::new();
+    fixture.write("css/my screenshot.svg", "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 8 8\"><rect width=\"8\" height=\"8\"/></svg>");
+    let base = "kind = \"project\"\ntitle = \"Example\"\nicon_text = \"UI\"\ntags = [\"Rust\"]\n[action]\nlabel = \"Repo\"\nhref = \"https://example.test/project\"\n";
+    let screenshot = "[screenshot]\nsrc = \"../../css/my screenshot.svg\"\nalt = \"App <view> & tools\"\ncaption = \"**Demo** — [source](https://example.test/project)\"\n";
+    fixture.write(
+        "content/projects/demo.md",
+        &format!("+++\n{base}{screenshot}+++\n\nShort description.\n"),
+    );
+    fixture.home("# Home\n\n:::cards kind=\"project\"\n- [Example](projects/demo.md)\n:::");
+    fixture.post(
+        "screens",
+        "",
+        ":::cards kind=\"project\"\n- [Example](../projects/demo.md)\n:::",
+    );
+    let build = fixture.compile().unwrap();
+    for (route, image_url) in [
+        ("index.html", "css/my%20screenshot.svg"),
+        ("blog/screens.html", "../css/my%20screenshot.svg"),
+    ] {
+        let html = output(&build, route);
+        let parsed = Html::parse_document(&html);
+        let image = parsed
+            .select(&Selector::parse(".project-screenshot img").unwrap())
+            .next()
+            .unwrap();
+        assert_eq!(image.value().attr("src"), Some(image_url));
+        assert_eq!(image.value().attr("alt"), Some("App <view> & tools"));
+        assert_eq!(image.value().attr("loading"), Some("lazy"));
+        let full_size = parsed
+            .select(&Selector::parse(".project-screenshot > a").unwrap())
+            .next()
+            .unwrap();
+        assert_eq!(full_size.value().attr("href"), Some(image_url));
+        assert_eq!(
+            texts(&html, ".project-screenshot figcaption strong"),
+            vec!["Demo"]
+        );
+    }
+    for (invalid, expected) in [
+        (
+            screenshot.replace("../../css/my screenshot.svg", "../../css/missing.svg"),
+            "missing.svg",
+        ),
+        (
+            screenshot.replace("../../css/my screenshot.svg", ""),
+            "nonempty src and alt",
+        ),
+        (
+            screenshot.replace("App <view> & tools", "   "),
+            "nonempty src and alt",
+        ),
+        (
+            screenshot.replace("alt = \"App <view> & tools\"\n", ""),
+            "missing field",
+        ),
+        (
+            screenshot.replace("../../css/my screenshot.svg", "javascript:alert"),
+            "unsupported URL scheme",
+        ),
+    ] {
+        fixture.write(
+            "content/projects/demo.md",
+            &format!("+++\n{base}{invalid}+++\n\nShort description.\n"),
+        );
+        assert!(fixture.error().contains(expected));
+    }
+    fixture.write(
+        "content/projects/demo.md",
+        &format!("+++\n{base}+++\n\nShort description.\n"),
+    );
+    let html = output(&fixture.compile().unwrap(), "index.html");
+    assert!(!html.contains("class=\"project-screenshot\""));
+    assert_eq!(texts(&html, ".card-body"), vec!["Short description."]);
+}

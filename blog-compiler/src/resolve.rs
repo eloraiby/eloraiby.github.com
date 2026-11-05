@@ -107,6 +107,15 @@ impl Site {
                             "project image requires image_alt",
                         ));
                     }
+                    if let Some(screenshot) = &project.screenshot
+                        && (screenshot.src.trim().is_empty() || screenshot.alt.trim().is_empty())
+                    {
+                        return Err(Error::at(
+                            &document.path,
+                            2,
+                            "project screenshot requires nonempty src and alt",
+                        ));
+                    }
                     vec![]
                 }
                 Metadata::Publication(_) => vec![],

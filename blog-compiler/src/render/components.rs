@@ -233,6 +233,22 @@ pub(super) fn project(
         .transpose()?;
     let description = blocks(document, &document.blocks, Style::Inline, context)?;
     let destination = resolve::link(context.site, document, context.route, &project.action.href)?;
+    let screenshot = if let Some(screenshot) = &project.screenshot {
+        let source = resolve::link(context.site, document, context.route, &screenshot.src)?;
+        let caption = screenshot
+            .caption
+            .as_ref()
+            .map(|caption| inline(document, caption, context))
+            .transpose()?;
+        Some(html! { figure class="project-screenshot" {
+            a href=(&source) target="_blank" rel="noopener" title=(format!("Open {} screenshot", project.title)) {
+                img src=(source) alt=(&screenshot.alt) loading="lazy" decoding="async";
+            }
+            @if let Some(caption) = caption { figcaption { (caption) } }
+        } })
+    } else {
+        None
+    };
     Ok(html! { div class="card" {
         div class="card-header" {
             div class="card-icon-title" {
@@ -245,6 +261,7 @@ pub(super) fn project(
             }
             @if let Some(stars) = project.stars { div class="card-stars" { (icon(Icon::Star, None, None)) (stars) } }
         }
+        @if let Some(screenshot) = screenshot { (screenshot) }
         div class="card-body" { (description) }
         div class="card-footer" {
             div class="tags-list" { (tags(&project.tags, false)) }

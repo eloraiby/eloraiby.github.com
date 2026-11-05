@@ -556,6 +556,31 @@ section:last-of-type {
   margin-bottom: 1.25rem;
 }
 
+/* Preview complete screenshots; opening the image preserves readable full size. */
+.project-screenshot {
+  margin: 0 0 1.25rem;
+}
+
+.project-screenshot > a {
+  display: block;
+}
+
+.project-screenshot img {
+  width: 100%;
+  aspect-ratio: 3 / 2;
+  object-fit: contain;
+  background-color: var(--code-bg);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+}
+
+.project-screenshot figcaption {
+  margin-top: 0.5rem;
+  color: var(--text-muted);
+  font-size: 0.75rem;
+  line-height: 1.45;
+}
+
 .card-footer {
   display: flex;
   flex-wrap: wrap;

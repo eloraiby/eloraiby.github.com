@@ -268,10 +268,24 @@ pub struct Project {
     pub image_alt: Option<String>,
     /// Optional fixed star count; builds never fetch remote counts.
     pub stars: Option<u32>,
+    /// Optional full-width project screenshot, separate from the small card icon.
+    pub screenshot: Option<ProjectScreenshot>,
     /// Visible technology labels.
     pub tags: Vec<String>,
     /// Footer destination and label.
     pub action: Action,
+}
+
+/// A project preview image and optional authored caption, rendered as a figure.
+#[derive(Debug, Deserialize)]
+#[serde(deny_unknown_fields)]
+pub struct ProjectScreenshot {
+    /// Source-relative image reference or supported external image URL.
+    pub src: String,
+    /// Required accessible description of the actual screenshot content.
+    pub alt: String,
+    /// Optional inline Markdown caption, including source or artwork credits.
+    pub caption: Option<String>,
 }
 
 /// A publication record with an inline-Markdown title and Markdown description.

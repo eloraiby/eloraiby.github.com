@@ -147,6 +147,20 @@ one of `image` (with nonempty `image_alt`) or `icon_text`. Optional `repository`
 makes the title a link; `stars` is a fixed integer. The body is its Markdown
 description. See `content/projects/delaunay.md` for a complete record.
 
+An optional `[screenshot]` table adds a full-width preview below the card header:
+
+```toml
+[screenshot]
+src = "../../images/example.png"
+alt = "The application's demo window"
+caption = "Optional caption with **inline Markdown** or artwork credits."
+```
+
+Both `src` and `alt` must be nonempty. The compiler resolves image references
+relative to the project record and validates local targets. The thumbnail preserves
+the whole image, loads lazily, and links to its full resolution. Screenshot data
+does not create article pages or blog-list entries.
+
 A publication provides `title` (inline Markdown), `year`, `venue`, `href`, and an
 `[action]` table. Optional `new_tab` controls the title link; `featured` selects
 the thesis treatment. Its body is the description. See
