@@ -1,6 +1,6 @@
 +++
 kind = "fragment"
-id = "hero"
+id = "self"
 status = "Available for high-impact architecture & systems projects"
 location = "Montreal, Canada"
 tags = ["NeoCogi", "ex-NVidia", "ex-MSFT", "ex-Samsung", "Rust", "C99 / C11", "C++11/17", "F#", "x86 Assembly", "Computational Geometry"]

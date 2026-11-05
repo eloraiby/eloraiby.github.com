@@ -286,20 +286,20 @@ section:last-of-type {
 }
 
 /* ==========================================================================
-   Hero Section
+   Self Introduction Section
    ========================================================================== */
 
-.hero {
+.self {
   padding: 4.5rem 0 3.5rem;
 }
 
-.hero-content {
+.self-content {
   display: grid;
   grid-template-columns: 1fr;
   gap: 2rem;
 }
 
-.hero-badge-row {
+.self-badge-row {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
@@ -334,7 +334,7 @@ section:last-of-type {
   box-shadow: 0 0 8px #22c55e;
 }
 
-.hero-title {
+.self-title {
   font-size: clamp(2.25rem, 4vw + 1rem, 3.25rem);
   font-weight: 800;
   letter-spacing: -0.03em;
@@ -342,13 +342,13 @@ section:last-of-type {
   margin-bottom: 1rem;
 }
 
-.hero-title .gradient-text {
+.self-title .gradient-text {
   background: var(--accent-gradient);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 
-.hero-subtitle {
+.self-subtitle {
   font-size: 1.2rem;
   font-weight: 400;
   color: var(--text-secondary);
@@ -357,14 +357,14 @@ section:last-of-type {
   margin-bottom: 1.75rem;
 }
 
-.hero-tags {
+.self-tags {
   display: flex;
   flex-wrap: wrap;
   gap: 0.5rem;
   margin-bottom: 2rem;
 }
 
-.hero-actions {
+.self-actions {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
@@ -1068,7 +1068,7 @@ section:last-of-type {
     grid-template-columns: 1fr;
   }
 
-  .hero {
+  .self {
     padding: 2.5rem 0 2rem;
   }
 

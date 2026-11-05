@@ -69,7 +69,7 @@ fn production_routes_cards_publications_and_curated_previews_are_preserved() {
     assert_eq!(
         sections,
         [
-            "hero",
+            "self",
             "experience",
             "projects",
             "research",

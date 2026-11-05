@@ -113,7 +113,7 @@ above the section heading. Supported views are:
 
 | View | Content contract |
 | --- | --- |
-| `hero` | H1 and introduction; metadata supplies `status`, `location`, `tags`, and `actions`. Bold text in the heading receives the gradient treatment. |
+| `self` | H1 and introduction; metadata supplies `status`, `location`, `tags`, and `actions`. Bold text in the heading receives the gradient treatment. |
 | `highlights` | Metadata-only `[[highlights]]` entries with `title`, `description`, and optional `accent`. |
 | `projects` | Leading H2 and description, followed by project cards. |
 | `publications` | Leading H2 and description, followed by publication cards. |

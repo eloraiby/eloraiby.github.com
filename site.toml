@@ -6,7 +6,7 @@ footer_note = "Built with modern, responsive plain HTML5 and CSS. No heavy frame
 assets = ["css", "js", "images", "docs", "email.svg"]
 [[navigation]]
 label = "Home"
-href = "index.md#hero"
+href = "index.md#self"
 blog = false
 [[navigation]]
 label = "Projects"

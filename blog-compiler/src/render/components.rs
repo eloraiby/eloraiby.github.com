@@ -137,26 +137,26 @@ fn fragment_view(
 ) -> Result<Markup> {
     match view {
         View::Markdown => blocks(document, &document.blocks, Style::Normal, context),
-        View::Hero => {
+        View::SelfIntro => {
             let status = fragment
                 .status
                 .as_deref()
-                .ok_or_else(|| Error("hero requires status metadata".into()))?;
+                .ok_or_else(|| Error("self view requires status metadata".into()))?;
             let location = fragment
                 .location
                 .as_deref()
-                .ok_or_else(|| Error("hero requires location metadata".into()))?;
-            let content = blocks(document, &document.blocks, Style::Hero, context)?;
+                .ok_or_else(|| Error("self view requires location metadata".into()))?;
+            let content = blocks(document, &document.blocks, Style::SelfIntro, context)?;
             let actions = actions(document, &fragment.actions, false, context)?;
             Ok(
-                html! { section id=(&fragment.id) class="hero" { div class="container" { div class="hero-content" { div {
-                    div class="hero-badge-row" {
+                html! { section id=(&fragment.id) class="self" { div class="container" { div class="self-content" { div {
+                    div class="self-badge-row" {
                         span class="pill-badge status-badge" { span class="status-dot" {} (status) }
                         span class="pill-badge" { (icon(Icon::Location, Some(14), None)) (location) }
                     }
                     (content)
-                    div class="hero-tags" { (tags(&fragment.tags, false)) }
-                    div class="hero-actions" { @for action in actions { (action) } }
+                    div class="self-tags" { (tags(&fragment.tags, false)) }
+                    div class="self-actions" { @for action in actions { (action) } }
                 } } } } },
             )
         }
@@ -278,7 +278,7 @@ pub(super) fn publication(
     )
 }
 
-/// Render shared action data, including the hero's trailing arrow placement.
+/// Render shared action data, including the self introduction's trailing arrow placement.
 fn actions(
     document: &Document,
     values: &[Action],

@@ -8,7 +8,7 @@ keywords = "Wael El Oraiby, Systems Architect, Rust, C99, C++, HPC, Computer Gra
 social_description = "Pushing limits in AI, Systems Architecture, Computer Graphics, and Low-Level Performance."
 +++
 
-:::include src="sections/hero.md" view="hero"
+:::include src="sections/self.md" view="self"
 :::
 
 :::include src="sections/experience.md" view="highlights"

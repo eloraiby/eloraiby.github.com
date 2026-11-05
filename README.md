@@ -14,6 +14,7 @@ Open `http://localhost:8000` to preview. The output is ordinary static HTML, CSS
 JavaScript, SVG, images, and PDFs.
 
 - Edit `content/index.md` to compose the homepage from Markdown fragments.
+- Edit `content/sections/self.md` for the self introduction at the top of the page.
 - Edit `content/blog.md` for the blog index; both existing index URLs are generated.
 - Add articles under `content/posts/`; the blog listing updates automatically.
 - Edit project and publication records under `content/projects/` and

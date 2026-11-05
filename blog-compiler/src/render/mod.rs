@@ -31,8 +31,8 @@ pub(crate) struct Context<'a> {
 pub(crate) enum Style {
     /// Ordinary article Markdown.
     Normal,
-    /// Hero heading, gradient emphasis, and subtitle.
-    Hero,
+    /// Self introduction heading, gradient emphasis, and subtitle.
+    SelfIntro,
     /// Homepage section heading and subtitle.
     Section,
     /// Blog index title and subtitle.
@@ -236,7 +236,7 @@ fn markdown(
                 let slug = slug(&title);
                 let count = context.headings.entry(slug.clone()).or_default(); *count += 1;
                 let id = if *count == 1 { slug } else { format!("{slug}-{count}") };
-                let class = match style { Style::Hero => Some("hero-title"), Style::Section | Style::Blog => Some("section-title"), _ => None };
+                let class = match style { Style::SelfIntro => Some("self-title"), Style::Section | Style::Blog => Some("section-title"), _ => None };
                 let size = (style == Style::Blog).then_some("font-size: 2.4rem;");
                 let tag = match level {
                     HeadingLevel::H1 => html! { h1 id=(id) class=[class] style=[size] {} },
@@ -251,7 +251,7 @@ fn markdown(
             }
             Event::Start(Tag::Paragraph) => {
                 if style == Style::Inline || tight_quotes.last() == Some(&true) { continue; }
-                let class = match style { Style::Hero => Some("hero-subtitle"), Style::Section | Style::Blog => Some("section-subtitle"), Style::Publication => Some("pub-details"), _ => None };
+                let class = match style { Style::SelfIntro => Some("self-subtitle"), Style::Section | Style::Blog => Some("section-subtitle"), Style::Publication => Some("pub-details"), _ => None };
                 let css = match style {
                     Style::Blog => Some("font-size: 1.15rem; max-width: 42rem;"),
                     Style::About => Some("color: var(--text-secondary); margin-bottom: 1.25rem;"),
@@ -277,8 +277,8 @@ fn markdown(
             }
             Event::End(TagEnd::BlockQuote(kind)) => { tight_quotes.pop(); resolved.push(Event::End(TagEnd::BlockQuote(kind))); }
             Event::End(TagEnd::Heading(level)) => { in_heading = false; resolved.push(Event::End(TagEnd::Heading(level))); }
-            Event::Start(Tag::Strong) if style == Style::Hero && in_heading => resolved.push(Event::Html("<span class=\"gradient-text\">".into())),
-            Event::End(TagEnd::Strong) if style == Style::Hero && in_heading => resolved.push(Event::Html("</span>".into())),
+            Event::Start(Tag::Strong) if style == Style::SelfIntro && in_heading => resolved.push(Event::Html("<span class=\"gradient-text\">".into())),
+            Event::End(TagEnd::Strong) if style == Style::SelfIntro && in_heading => resolved.push(Event::Html("</span>".into())),
             Event::Start(Tag::List(None)) if style == Style::About => resolved.push(Event::Html("<ul style=\"color: var(--text-secondary); margin-left: 1.25rem; margin-bottom: 1rem; display: flex; flex-direction: column; gap: 0.5rem;\">".into())),
             other => resolved.push(other),
         }

@@ -94,7 +94,7 @@ pub enum Icon {
     Moon,
     /// Mobile navigation's three bars.
     Menu,
-    /// Location marker in the hero.
+    /// Location marker in the self introduction.
     Location,
     /// Right-pointing action arrow.
     Arrow,
@@ -207,14 +207,14 @@ pub struct Fragment {
     pub id: String,
     /// Optional small label above the main section heading.
     pub eyebrow: Option<String>,
-    /// Hero availability badge text.
+    /// Self introduction availability badge text.
     pub status: Option<String>,
-    /// Hero location badge text.
+    /// Self introduction location badge text.
     pub location: Option<String>,
-    /// Hero expertise tags.
+    /// Self introduction expertise tags.
     #[serde(default)]
     pub tags: Vec<String>,
-    /// Hero or contact action links.
+    /// Self introduction or contact action links.
     #[serde(default)]
     pub actions: Vec<Action>,
     /// Career highlights shown in the compact statistics strip.
@@ -301,7 +301,8 @@ pub struct Publication {
 #[serde(rename_all = "kebab-case")]
 pub enum View {
     /// Introductory heading, badges, tags, and actions.
-    Hero,
+    #[serde(rename = "self")]
+    SelfIntro,
     /// Compact career highlights.
     Highlights,
     /// Project section with an ordered card list.
